@@ -45,6 +45,14 @@
       z-index: 0;
     }
 
+    /* Particle canvas */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .container {
       position: relative;
       z-index: 1;
@@ -63,11 +71,7 @@
       gap: 16px;
     }
 
-    .logo {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .logo { display: flex; flex-direction: column; gap: 4px; }
 
     .logo-eyebrow {
       font-family: 'Space Mono', monospace;
@@ -84,9 +88,7 @@
       letter-spacing: -0.5px;
     }
 
-    .logo-title span {
-      color: var(--cyan);
-    }
+    .logo-title span { color: var(--cyan); }
 
     .header-right {
       display: flex;
@@ -179,13 +181,8 @@
       line-height: 1;
     }
 
-    .stat-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-    /* Usage bar */
     .usage-bar-wrap {
       margin-top: 10px;
       background: rgba(255,255,255,0.05);
@@ -214,7 +211,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 24px;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
       cursor: default;
@@ -223,18 +220,17 @@
     .agent-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 1px;
       opacity: 0;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.3s ease;
     }
 
     .agent-card:hover {
       background: var(--card-hover);
-      border-color: rgba(0,245,255,0.2);
-      transform: translateY(-2px);
+      border-color: rgba(0,245,255,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,245,255,0.08);
     }
 
     .agent-card:hover::before {
@@ -242,12 +238,34 @@
       background: linear-gradient(90deg, transparent, var(--cyan), transparent);
     }
 
-    .agent-card.scheduled {
-      border-color: rgba(0,245,255,0.15);
+    .agent-card.scheduled { border-color: rgba(0,245,255,0.15); }
+    .agent-card.on-demand { border-color: rgba(168,85,247,0.15); }
+
+    /* Running state */
+    .agent-card.is-running {
+      border-color: rgba(34,211,165,0.5) !important;
+      box-shadow: 0 0 30px rgba(34,211,165,0.15), inset 0 0 30px rgba(34,211,165,0.03);
+      animation: card-pulse 3s ease infinite;
     }
 
-    .agent-card.on-demand {
-      border-color: rgba(168,85,247,0.15);
+    @keyframes card-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(34,211,165,0.1), inset 0 0 20px rgba(34,211,165,0.02); }
+      50% { box-shadow: 0 0 40px rgba(34,211,165,0.25), inset 0 0 30px rgba(34,211,165,0.05); }
+    }
+
+    .agent-card.is-running::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(34,211,165,0.04), transparent);
+      animation: card-sweep 2.5s ease infinite;
+    }
+
+    @keyframes card-sweep {
+      0% { left: -60%; }
+      100% { left: 160%; }
     }
 
     .agent-card-top {
@@ -289,9 +307,9 @@
     }
 
     .status-badge.running {
-      background: rgba(34,211,165,0.1);
+      background: rgba(34,211,165,0.12);
       color: var(--green);
-      border: 1px solid rgba(34,211,165,0.3);
+      border: 1px solid rgba(34,211,165,0.4);
     }
 
     .status-badge.scheduled-badge {
@@ -309,7 +327,7 @@
     .status-badge.idle .status-dot { background: var(--muted); }
     .status-badge.running .status-dot {
       background: var(--green);
-      animation: pulse-green 1.5s ease infinite;
+      animation: pulse-green 1s ease infinite;
     }
     .status-badge.scheduled-badge .status-dot { background: var(--cyan); }
 
@@ -371,71 +389,6 @@
 
     .agent-link:hover { opacity: 1; }
 
-    /* Usage section */
-    .usage-section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 40px;
-    }
-
-    .usage-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .usage-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .usage-month {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-    }
-
-    .usage-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .usage-row {
-      display: grid;
-      grid-template-columns: 160px 1fr 80px;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .usage-agent-name {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .mini-bar-wrap {
-      background: rgba(255,255,255,0.04);
-      border-radius: 100px;
-      height: 6px;
-      overflow: hidden;
-    }
-
-    .mini-bar-fill {
-      height: 100%;
-      border-radius: 100px;
-      background: linear-gradient(90deg, var(--cyan), var(--purple));
-    }
-
-    .usage-tokens {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      text-align: right;
-    }
-
     /* Pipeline */
     .pipeline {
       background: var(--card);
@@ -445,16 +398,11 @@
       margin-bottom: 40px;
     }
 
-    .pipeline-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
+    .pipeline-title { font-size: 15px; font-weight: 600; margin-bottom: 24px; }
 
     .pipeline-flow {
       display: flex;
       align-items: center;
-      gap: 0;
       flex-wrap: wrap;
       gap: 8px;
     }
@@ -482,10 +430,54 @@
       color: var(--green);
     }
 
-    .pipe-arrow {
-      color: var(--border);
-      font-size: 16px;
-      font-family: 'Space Mono', monospace;
+    /* Animated pipeline arrow */
+    .pipe-arrow-wrap {
+      position: relative;
+      width: 48px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .pipe-arrow-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      transform: translateY(-50%);
+    }
+
+    .pipe-arrow-head {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .pipe-dot {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+      animation: dot-flow 2s linear infinite;
+    }
+
+    .pipe-dot.purple { background: var(--purple); box-shadow: 0 0 6px var(--purple); animation-delay: 0.5s; }
+    .pipe-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); animation-delay: 1s; }
+
+    @keyframes dot-flow {
+      0% { left: 0; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { left: calc(100% - 6px); opacity: 0; }
     }
 
     .pipe-label {
@@ -503,6 +495,142 @@
       gap: 4px;
     }
 
+    /* Activity terminal */
+    .terminal {
+      background: #080812;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .td-red { background: #ff5f57; }
+    .td-yellow { background: #ffbd2e; }
+    .td-green { background: #28c840; }
+
+    .terminal-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      flex: 1;
+      text-align: center;
+    }
+
+    .terminal-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--green);
+    }
+
+    .terminal-body {
+      padding: 16px 20px;
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .log-line {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      line-height: 1.8;
+      display: flex;
+      gap: 12px;
+      opacity: 0;
+      animation: log-appear 0.3s ease forwards;
+    }
+
+    @keyframes log-appear {
+      from { opacity: 0; transform: translateX(-4px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-time { color: var(--muted); flex-shrink: 0; }
+    .log-agent { flex-shrink: 0; }
+    .log-agent.cyan { color: var(--cyan); }
+    .log-agent.purple { color: var(--purple); }
+    .log-agent.green { color: var(--green); }
+    .log-agent.orange { color: var(--orange); }
+    .log-msg { color: var(--text); opacity: 0.8; }
+    .log-msg .dim { color: var(--muted); }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 6px;
+      height: 12px;
+      background: var(--cyan);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Notion links */
+    .notion-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .notion-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-decoration: none;
+      display: block;
+      transition: all 0.2s ease;
+    }
+
+    .notion-card:hover {
+      border-color: rgba(0,245,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,245,255,0.08);
+    }
+
+    .notion-card-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .notion-card-open {
+      font-size: 12px;
+      color: var(--cyan);
+      font-family: 'Space Mono', monospace;
+    }
+
     /* Footer */
     footer {
       text-align: center;
@@ -515,7 +643,7 @@
 
     footer span { color: var(--cyan); }
 
-    /* Scanline animation */
+    /* Scanline */
     @keyframes scanline {
       0% { transform: translateY(-100%); }
       100% { transform: translateY(100vh); }
@@ -523,12 +651,10 @@
 
     .scanline {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(transparent, rgba(0,245,255,0.05), transparent);
-      animation: scanline 8s linear infinite;
+      background: linear-gradient(transparent, rgba(0,245,255,0.04), transparent);
+      animation: scanline 10s linear infinite;
       pointer-events: none;
       z-index: 999;
     }
@@ -536,12 +662,13 @@
     @media (max-width: 768px) {
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       .agent-grid { grid-template-columns: 1fr; }
-      .usage-row { grid-template-columns: 120px 1fr 60px; }
+      .notion-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
+<canvas id="particles"></canvas>
 <div class="scanline"></div>
 
 <div class="container">
@@ -576,7 +703,7 @@
     </div>
     <div class="stat-card">
       <div class="stat-label">Outputs This Week</div>
-      <div class="stat-value">—</div>
+      <div class="stat-value" id="output-count">—</div>
       <div class="stat-sub">Check Notion hub</div>
     </div>
     <div class="stat-card">
@@ -584,7 +711,7 @@
       <div class="stat-value" style="font-size:18px;">MAX</div>
       <div class="stat-sub">Covered by Max plan</div>
       <div class="usage-bar-wrap" style="margin-top:10px;">
-        <div class="usage-bar-fill" style="width: 12%;"></div>
+        <div class="usage-bar-fill" id="usage-bar" style="width: 0%;"></div>
       </div>
     </div>
   </div>
@@ -593,12 +720,12 @@
   <div class="section-label">Scheduled Agents — Run Automatically</div>
   <div class="agent-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom: 16px;">
 
-    <div class="agent-card scheduled">
+    <div class="agent-card scheduled is-running" id="card-personal-brand">
       <div class="agent-card-top">
         <div class="agent-icon icon-cyan">📡</div>
-        <div class="status-badge scheduled-badge">
+        <div class="status-badge running" id="badge-personal-brand">
           <div class="status-dot"></div>
-          DAILY 6AM
+          <span id="badge-text-personal-brand">RUNNING</span>
         </div>
       </div>
       <div class="agent-name">Personal Brand Scout</div>
@@ -620,12 +747,12 @@
       <a class="agent-link" href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank">→ View outputs in Notion</a>
     </div>
 
-    <div class="agent-card scheduled">
+    <div class="agent-card scheduled" id="card-agency-intel">
       <div class="agent-card-top">
         <div class="agent-icon icon-cyan">🏢</div>
-        <div class="status-badge scheduled-badge">
+        <div class="status-badge scheduled-badge" id="badge-agency-intel">
           <div class="status-dot"></div>
-          DAILY 6:30AM
+          <span id="badge-text-agency-intel">DAILY 6:30AM</span>
         </div>
       </div>
       <div class="agent-name">Agency Intel Scout</div>
@@ -647,12 +774,12 @@
       <a class="agent-link" href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank">→ View outputs in Notion</a>
     </div>
 
-    <div class="agent-card scheduled">
+    <div class="agent-card scheduled" id="card-client-scout">
       <div class="agent-card-top">
         <div class="agent-icon icon-green">👥</div>
-        <div class="status-badge scheduled-badge">
+        <div class="status-badge scheduled-badge" id="badge-client-scout">
           <div class="status-dot"></div>
-          MON 6AM
+          <span id="badge-text-client-scout">MON 6AM</span>
         </div>
       </div>
       <div class="agent-name">Client Scout</div>
@@ -771,28 +898,55 @@
 
   </div>
 
+  <!-- Live Activity Terminal -->
+  <div class="section-label">Live Activity Feed</div>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <div class="terminal-dot td-red"></div>
+        <div class="terminal-dot td-yellow"></div>
+        <div class="terminal-dot td-green"></div>
+      </div>
+      <div class="terminal-title">inclusify-studio — agent-log</div>
+      <div class="terminal-live">
+        <div class="live-dot" style="width:5px;height:5px;"></div>
+        LIVE
+      </div>
+    </div>
+    <div class="terminal-body" id="terminal-body">
+    </div>
+  </div>
+
   <!-- Pipeline -->
-  <div class="section-label" style="margin-top:8px;">Agent Pipeline</div>
+  <div class="section-label">Agent Pipeline</div>
   <div class="pipeline">
-    <div style="display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:20px;">
       <div>
-        <div class="pipe-label" style="margin-bottom:8px;">AUTOMATED PIPELINE (runs while you sleep)</div>
+        <div class="pipe-label" style="margin-bottom:10px;">AUTOMATED PIPELINE (runs while you sleep)</div>
         <div class="pipeline-flow">
           <div class="pipe-col">
             <div class="pipe-node">📡 Personal Brand Scout</div>
             <div class="pipe-label">Daily 6AM</div>
           </div>
-          <div class="pipe-arrow">→</div>
+          <div class="pipe-arrow-wrap">
+            <div class="pipe-arrow-line"></div>
+            <div class="pipe-dot"></div>
+            <div class="pipe-arrow-head">›</div>
+          </div>
           <div class="pipe-col">
             <div class="pipe-node purple-node">📅 Brand Strategist</div>
             <div class="pipe-label">Weekly</div>
           </div>
-          <div class="pipe-arrow">→</div>
+          <div class="pipe-arrow-wrap">
+            <div class="pipe-arrow-line"></div>
+            <div class="pipe-dot purple"></div>
+            <div class="pipe-arrow-head">›</div>
+          </div>
           <div class="pipe-col">
             <div class="pipe-node purple-node">✍️ Copywriter</div>
             <div class="pipe-label">On demand</div>
           </div>
-          <div style="color:var(--border); font-size:12px; padding: 0 4px;">+</div>
+          <div style="color:var(--border); font-size:12px; padding: 0 4px; font-family:'Space Mono',monospace;">+</div>
           <div class="pipe-col">
             <div class="pipe-node purple-node">🎨 Carousel Builder</div>
             <div class="pipe-label">On demand (parallel)</div>
@@ -800,23 +954,31 @@
         </div>
       </div>
       <div>
-        <div class="pipe-label" style="margin-bottom:8px;">INDEPENDENT PIPELINES</div>
+        <div class="pipe-label" style="margin-bottom:10px;">INDEPENDENT PIPELINES</div>
         <div class="pipeline-flow">
           <div class="pipe-col">
             <div class="pipe-node">🏢 Agency Intel Scout</div>
             <div class="pipe-label">Daily 6:30AM</div>
           </div>
-          <div class="pipe-arrow">→</div>
+          <div class="pipe-arrow-wrap">
+            <div class="pipe-arrow-line"></div>
+            <div class="pipe-dot" style="animation-delay:0.3s;"></div>
+            <div class="pipe-arrow-head">›</div>
+          </div>
           <div class="pipe-col">
             <div class="pipe-node purple-node">🎯 Prospector</div>
             <div class="pipe-label">On demand</div>
           </div>
-          <div style="color:var(--border); padding: 0 16px; font-size:12px;">|</div>
+          <div style="color:var(--border); padding: 0 20px; font-size:12px; font-family:'Space Mono',monospace;">|</div>
           <div class="pipe-col">
             <div class="pipe-node green-node">👥 Client Scout</div>
             <div class="pipe-label">Monday 6AM</div>
           </div>
-          <div class="pipe-arrow">→</div>
+          <div class="pipe-arrow-wrap">
+            <div class="pipe-arrow-line"></div>
+            <div class="pipe-dot green"></div>
+            <div class="pipe-arrow-head">›</div>
+          </div>
           <div class="pipe-col">
             <div class="pipe-node green-node">Notion → Client Intel</div>
             <div class="pipe-label">Private</div>
@@ -828,36 +990,26 @@
 
   <!-- Notion Hub Links -->
   <div class="section-label">Notion AI Studio Hub</div>
-  <div class="stats-row" style="grid-template-columns: repeat(5,1fr);">
-    <a href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank" style="text-decoration:none;">
-      <div class="stat-card" style="cursor:pointer; transition: all 0.2s;">
-        <div class="stat-label">📡 Brand Intel</div>
-        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
-      </div>
+  <div class="notion-grid">
+    <a href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank" class="notion-card">
+      <div class="notion-card-label">📡 Brand Intel</div>
+      <div class="notion-card-open">Open →</div>
     </a>
-    <a href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank" style="text-decoration:none;">
-      <div class="stat-card" style="cursor:pointer;">
-        <div class="stat-label">🏢 Agency Intel</div>
-        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
-      </div>
+    <a href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank" class="notion-card">
+      <div class="notion-card-label">🏢 Agency Intel</div>
+      <div class="notion-card-open">Open →</div>
     </a>
-    <a href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank" style="text-decoration:none;">
-      <div class="stat-card" style="cursor:pointer;">
-        <div class="stat-label">👥 Client Intel</div>
-        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
-      </div>
+    <a href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank" class="notion-card">
+      <div class="notion-card-label">👥 Client Intel</div>
+      <div class="notion-card-open">Open →</div>
     </a>
-    <a href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank" style="text-decoration:none;">
-      <div class="stat-card" style="cursor:pointer;">
-        <div class="stat-label">📅 Content Plans</div>
-        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
-      </div>
+    <a href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank" class="notion-card">
+      <div class="notion-card-label">📅 Content Plans</div>
+      <div class="notion-card-open">Open →</div>
     </a>
-    <a href="https://www.notion.so/3349c88af9ee812cad1cc5745dd61575" target="_blank" style="text-decoration:none;">
-      <div class="stat-card" style="cursor:pointer;">
-        <div class="stat-label">📊 Usage Log</div>
-        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
-      </div>
+    <a href="https://www.notion.so/3349c88af9ee812cad1cc5745dd61575" target="_blank" class="notion-card">
+      <div class="notion-card-label">📊 Usage Log</div>
+      <div class="notion-card-open">Open →</div>
     </a>
   </div>
 
@@ -869,15 +1021,163 @@
 </div>
 
 <script>
-  // Live clock
+  // ── Live clock ──────────────────────────────────────────────
   function updateClock() {
     const now = new Date();
-    const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    document.getElementById('clock').textContent = now.toLocaleString('en-US', options);
+    document.getElementById('clock').textContent = now.toLocaleString('en-US', {
+      weekday:'short', month:'short', day:'numeric',
+      hour:'2-digit', minute:'2-digit', second:'2-digit'
+    });
   }
   updateClock();
   setInterval(updateClock, 1000);
-</script>
 
+  // ── Usage bar animate in ─────────────────────────────────────
+  setTimeout(() => {
+    document.getElementById('usage-bar').style.width = '12%';
+  }, 600);
+
+  // ── Particle canvas ─────────────────────────────────────────
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['rgba(0,245,255,', 'rgba(168,85,247,', 'rgba(34,211,165,'];
+
+  function createParticle() {
+    const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.4 + 0.1,
+      color: c
+    };
+  }
+
+  for (let i = 0; i < 80; i++) particles.push(createParticle());
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // ── Live activity terminal ───────────────────────────────────
+  const logLines = [
+    { time: '06:00:01', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Starting daily run...' },
+    { time: '06:00:03', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: Deaf creator economy news' },
+    { time: '06:00:09', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: Instagram algorithm updates' },
+    { time: '06:00:15', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: AI tools for marketing' },
+    { time: '06:00:21', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Found 4 LinkedIn ideas · 3 Instagram ideas' },
+    { time: '06:00:24', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Writing to Notion → Personal Brand Intel ✓' },
+    { time: '06:00:25', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Run complete. Tokens: 2,841 in / 1,204 out' },
+    { time: '06:30:01', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Starting daily run...' },
+    { time: '06:30:04', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Searching: influencer marketing industry news' },
+    { time: '06:30:11', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Searching: brands investing in creator campaigns' },
+    { time: '06:30:19', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Found 2 outreach targets worth flagging' },
+    { time: '06:30:22', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Writing to Notion → Agency Intel ✓' },
+    { time: '06:30:23', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Run complete. Tokens: 3,102 in / 1,388 out' },
+    { time: '—',        agent: 'SYSTEM',               color: 'green',  msg: 'All scheduled agents complete. Standby.' },
+  ];
+
+  const body = document.getElementById('terminal-body');
+  let lineIndex = 0;
+
+  function addLogLine() {
+    if (lineIndex >= logLines.length) {
+      lineIndex = 0;
+      body.innerHTML = '';
+    }
+    const l = logLines[lineIndex++];
+    const div = document.createElement('div');
+    div.className = 'log-line';
+    div.innerHTML = `
+      <span class="log-time">${l.time}</span>
+      <span class="log-agent ${l.color}">[${l.agent}]</span>
+      <span class="log-msg">${l.msg}</span>
+    `;
+    body.appendChild(div);
+
+    // Keep only last 7 lines visible
+    const lines = body.querySelectorAll('.log-line');
+    if (lines.length > 7) lines[0].remove();
+
+    // Add cursor to last line
+    body.querySelectorAll('.cursor-blink').forEach(c => c.remove());
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor-blink';
+    div.appendChild(cursor);
+  }
+
+  // Start after a short delay, then add lines periodically
+  setTimeout(() => {
+    addLogLine();
+    setInterval(addLogLine, 1800);
+  }, 1200);
+
+  // ── Simulated agent state cycling ───────────────────────────
+  // After 8s, move "running" state to agency intel scout, etc.
+  const agentCycle = [
+    { cardId: 'card-personal-brand', badgeId: 'badge-personal-brand', textId: 'badge-text-personal-brand', runningClass: 'cyan' },
+    { cardId: 'card-agency-intel',   badgeId: 'badge-agency-intel',   textId: 'badge-text-agency-intel',   runningClass: 'cyan' },
+    { cardId: 'card-client-scout',   badgeId: 'badge-client-scout',   textId: 'badge-text-client-scout',   runningClass: 'green' },
+  ];
+
+  let activeAgent = 0;
+
+  function setRunning(index) {
+    agentCycle.forEach((a, i) => {
+      const card = document.getElementById(a.cardId);
+      const badge = document.getElementById(a.badgeId);
+      const text = document.getElementById(a.textId);
+      if (i === index) {
+        card.classList.add('is-running');
+        badge.className = 'status-badge running';
+        text.textContent = 'RUNNING';
+      } else {
+        card.classList.remove('is-running');
+        if (i === 0) {
+          badge.className = 'status-badge scheduled-badge';
+          text.textContent = 'DAILY 6AM';
+        } else if (i === 1) {
+          badge.className = 'status-badge scheduled-badge';
+          text.textContent = 'DAILY 6:30AM';
+        } else {
+          badge.className = 'status-badge scheduled-badge';
+          text.textContent = 'MON 6AM';
+        }
+      }
+    });
+  }
+
+  setRunning(0);
+  setInterval(() => {
+    activeAgent = (activeAgent + 1) % agentCycle.length;
+    setRunning(activeAgent);
+  }, 9000);
+
+</script>
 </body>
 </html>
