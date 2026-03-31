@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inclusify AI Studio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+    :root {
+      --bg: #070710;
+      --card: #0d0d1a;
+      --card-hover: #111122;
+      --border: #1e1e3a;
+      --cyan: #00f5ff;
+      --purple: #a855f7;
+      --green: #22d3a5;
+      --orange: #f97316;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --glow-cyan: 0 0 20px rgba(0,245,255,0.3);
+      --glow-purple: 0 0 20px rgba(168,85,247,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logo-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .logo-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-title span {
+      color: var(--cyan);
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34,211,165,0.1);
+      border: 1px solid rgba(34,211,165,0.3);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--green);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-green 2s ease infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,211,165,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,211,165,0); }
+    }
+
+    .last-sync {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* Section labels */
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: 'Space Mono', monospace;
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Usage bar */
+    .usage-bar-wrap {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 100px;
+      height: 4px;
+      overflow: hidden;
+    }
+
+    .usage-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      transition: width 1s ease;
+    }
+
+    /* Agent grid */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .agent-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .agent-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(0,245,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .agent-card:hover::before {
+      opacity: 1;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .agent-card.scheduled {
+      border-color: rgba(0,245,255,0.15);
+    }
+
+    .agent-card.on-demand {
+      border-color: rgba(168,85,247,0.15);
+    }
+
+    .agent-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .agent-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .icon-cyan { background: rgba(0,245,255,0.1); }
+    .icon-purple { background: rgba(168,85,247,0.1); }
+    .icon-green { background: rgba(34,211,165,0.1); }
+    .icon-orange { background: rgba(249,115,22,0.1); }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .status-badge.idle {
+      background: rgba(100,116,139,0.1);
+      color: var(--muted);
+      border: 1px solid rgba(100,116,139,0.2);
+    }
+
+    .status-badge.running {
+      background: rgba(34,211,165,0.1);
+      color: var(--green);
+      border: 1px solid rgba(34,211,165,0.3);
+    }
+
+    .status-badge.scheduled-badge {
+      background: rgba(0,245,255,0.08);
+      color: var(--cyan);
+      border: 1px solid rgba(0,245,255,0.2);
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .status-badge.idle .status-dot { background: var(--muted); }
+    .status-badge.running .status-dot {
+      background: var(--green);
+      animation: pulse-green 1.5s ease infinite;
+    }
+    .status-badge.scheduled-badge .status-dot { background: var(--cyan); }
+
+    .agent-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .agent-role {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .agent-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .meta-key {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .meta-val {
+      font-size: 11px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .meta-val.cyan { color: var(--cyan); }
+    .meta-val.purple { color: var(--purple); }
+
+    .agent-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .agent-link:hover { opacity: 1; }
+
+    /* Usage section */
+    .usage-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 40px;
+    }
+
+    .usage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .usage-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .usage-month {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .usage-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .usage-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 80px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .usage-agent-name {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .mini-bar-wrap {
+      background: rgba(255,255,255,0.04);
+      border-radius: 100px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+
+    .usage-tokens {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      text-align: right;
+    }
+
+    /* Pipeline */
+    .pipeline {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 40px;
+    }
+
+    .pipeline-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pipe-node {
+      background: rgba(0,245,255,0.06);
+      border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--cyan);
+      font-family: 'Space Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .pipe-node.purple-node {
+      background: rgba(168,85,247,0.06);
+      border-color: rgba(168,85,247,0.15);
+      color: var(--purple);
+    }
+
+    .pipe-node.green-node {
+      background: rgba(34,211,165,0.06);
+      border-color: rgba(34,211,165,0.15);
+      color: var(--green);
+    }
+
+    .pipe-arrow {
+      color: var(--border);
+      font-size: 16px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .pipe-label {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    .pipe-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    footer span { color: var(--cyan); }
+
+    /* Scanline animation */
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(transparent, rgba(0,245,255,0.05), transparent);
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .agent-grid { grid-template-columns: 1fr; }
+      .usage-row { grid-template-columns: 120px 1fr 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-eyebrow">// Inclusify Studio</div>
+      <div class="logo-title">AI <span>Studio</span> Command Center</div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        SYSTEM ONLINE
+      </div>
+      <div class="last-sync" id="clock">Loading...</div>
+    </div>
+  </header>
+
+  <!-- Stats Row -->
+  <div class="section-label">System Overview</div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Agents</div>
+      <div class="stat-value">7</div>
+      <div class="stat-sub">3 scheduled · 4 on demand</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Scheduled Runs</div>
+      <div class="stat-value">2</div>
+      <div class="stat-sub">Daily · 1 weekly</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Outputs This Week</div>
+      <div class="stat-value">—</div>
+      <div class="stat-sub">Check Notion hub</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Usage</div>
+      <div class="stat-value" style="font-size:18px;">MAX</div>
+      <div class="stat-sub">Covered by Max plan</div>
+      <div class="usage-bar-wrap" style="margin-top:10px;">
+        <div class="usage-bar-fill" style="width: 12%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scheduled Agents -->
+  <div class="section-label">Scheduled Agents — Run Automatically</div>
+  <div class="agent-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom: 16px;">
+
+    <div class="agent-card scheduled">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-cyan">📡</div>
+        <div class="status-badge scheduled-badge">
+          <div class="status-dot"></div>
+          DAILY 6AM
+        </div>
+      </div>
+      <div class="agent-name">Personal Brand Scout</div>
+      <div class="agent-role">Searches the web for Deaf creator economy news, social media trends, AI tools, and new platform updates. Drops ideas for LinkedIn and Instagram.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Schedule</span>
+          <span class="meta-val cyan">Daily · 6:00 AM</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Output</span>
+          <span class="meta-val">Notion → Personal Brand Intel</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Sonnet</span>
+        </div>
+      </div>
+      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank">→ View outputs in Notion</a>
+    </div>
+
+    <div class="agent-card scheduled">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-cyan">🏢</div>
+        <div class="status-badge scheduled-badge">
+          <div class="status-dot"></div>
+          DAILY 6:30AM
+        </div>
+      </div>
+      <div class="agent-name">Agency Intel Scout</div>
+      <div class="agent-role">Tracks influencer marketing industry news, SMM trends, brand activity, and surfaces new outreach targets for Inclusify Studio.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Schedule</span>
+          <span class="meta-val cyan">Daily · 6:30 AM</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Output</span>
+          <span class="meta-val">Notion → Agency Intel</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Sonnet</span>
+        </div>
+      </div>
+      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank">→ View outputs in Notion</a>
+    </div>
+
+    <div class="agent-card scheduled">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-green">👥</div>
+        <div class="status-badge scheduled-badge">
+          <div class="status-dot"></div>
+          MON 6AM
+        </div>
+      </div>
+      <div class="agent-name">Client Scout</div>
+      <div class="agent-role">Weekly deep research for Convo, ASL Bloom, and Bumbleberry Farms. Includes competitor social listening and Reel + carousel ideas for Danielle.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Schedule</span>
+          <span class="meta-val cyan">Weekly · Monday 6:00 AM</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Output</span>
+          <span class="meta-val">Notion → Client Intel</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Sonnet</span>
+        </div>
+      </div>
+      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank">→ View outputs in Notion</a>
+    </div>
+
+  </div>
+
+  <!-- On-Demand Agents -->
+  <div class="section-label" style="margin-top:32px;">On-Demand Agents — Trigger When You Need Them</div>
+  <div class="agent-grid" style="grid-template-columns: repeat(4,1fr);">
+
+    <div class="agent-card on-demand">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-purple">📅</div>
+        <div class="status-badge idle">
+          <div class="status-dot"></div>
+          ON DEMAND
+        </div>
+      </div>
+      <div class="agent-name">Brand Strategist</div>
+      <div class="agent-role">Builds your weekly content calendar — 5 LinkedIn + 5 Instagram posts with hooks, pillars, and briefs.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Trigger</span>
+          <span class="meta-val purple">"Build content plan"</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Opus</span>
+        </div>
+      </div>
+      <a class="agent-link" href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank">→ View outputs in Notion</a>
+    </div>
+
+    <div class="agent-card on-demand">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-purple">✍️</div>
+        <div class="status-badge idle">
+          <div class="status-dot"></div>
+          ON DEMAND
+        </div>
+      </div>
+      <div class="agent-name">Copywriter</div>
+      <div class="agent-role">Writes finished LinkedIn and Instagram posts in your exact voice. LinkedIn is priority. Story, hook, list, or thought piece formats.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Trigger</span>
+          <span class="meta-val purple">"Write a post about X"</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Opus</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card on-demand">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-orange">🎨</div>
+        <div class="status-badge idle">
+          <div class="status-dot"></div>
+          ON DEMAND
+        </div>
+      </div>
+      <div class="agent-name">Carousel Builder</div>
+      <div class="agent-role">Builds carousels directly in Canva for Patrick's Instagram or Bumbleberry Farms. 4-9 slides, brand colors applied automatically.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Trigger</span>
+          <span class="meta-val purple">"Build carousel for X"</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Sonnet</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card on-demand">
+      <div class="agent-card-top">
+        <div class="agent-icon icon-purple">🎯</div>
+        <div class="status-badge idle">
+          <div class="status-dot"></div>
+          ON DEMAND
+        </div>
+      </div>
+      <div class="agent-name">Prospector</div>
+      <div class="agent-role">Researches a prospect and writes all 3 LinkedIn outreach messages personalized and ready to copy-paste. Learns from replies that work.</div>
+      <div class="agent-meta">
+        <div class="meta-row">
+          <span class="meta-key">Trigger</span>
+          <span class="meta-val purple">"Draft outreach for X"</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-key">Model</span>
+          <span class="meta-val">Opus</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pipeline -->
+  <div class="section-label" style="margin-top:8px;">Agent Pipeline</div>
+  <div class="pipeline">
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <div class="pipe-label" style="margin-bottom:8px;">AUTOMATED PIPELINE (runs while you sleep)</div>
+        <div class="pipeline-flow">
+          <div class="pipe-col">
+            <div class="pipe-node">📡 Personal Brand Scout</div>
+            <div class="pipe-label">Daily 6AM</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-col">
+            <div class="pipe-node purple-node">📅 Brand Strategist</div>
+            <div class="pipe-label">Weekly</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-col">
+            <div class="pipe-node purple-node">✍️ Copywriter</div>
+            <div class="pipe-label">On demand</div>
+          </div>
+          <div style="color:var(--border); font-size:12px; padding: 0 4px;">+</div>
+          <div class="pipe-col">
+            <div class="pipe-node purple-node">🎨 Carousel Builder</div>
+            <div class="pipe-label">On demand (parallel)</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="pipe-label" style="margin-bottom:8px;">INDEPENDENT PIPELINES</div>
+        <div class="pipeline-flow">
+          <div class="pipe-col">
+            <div class="pipe-node">🏢 Agency Intel Scout</div>
+            <div class="pipe-label">Daily 6:30AM</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-col">
+            <div class="pipe-node purple-node">🎯 Prospector</div>
+            <div class="pipe-label">On demand</div>
+          </div>
+          <div style="color:var(--border); padding: 0 16px; font-size:12px;">|</div>
+          <div class="pipe-col">
+            <div class="pipe-node green-node">👥 Client Scout</div>
+            <div class="pipe-label">Monday 6AM</div>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-col">
+            <div class="pipe-node green-node">Notion → Client Intel</div>
+            <div class="pipe-label">Private</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notion Hub Links -->
+  <div class="section-label">Notion AI Studio Hub</div>
+  <div class="stats-row" style="grid-template-columns: repeat(5,1fr);">
+    <a href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank" style="text-decoration:none;">
+      <div class="stat-card" style="cursor:pointer; transition: all 0.2s;">
+        <div class="stat-label">📡 Brand Intel</div>
+        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
+      </div>
+    </a>
+    <a href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank" style="text-decoration:none;">
+      <div class="stat-card" style="cursor:pointer;">
+        <div class="stat-label">🏢 Agency Intel</div>
+        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
+      </div>
+    </a>
+    <a href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank" style="text-decoration:none;">
+      <div class="stat-card" style="cursor:pointer;">
+        <div class="stat-label">👥 Client Intel</div>
+        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
+      </div>
+    </a>
+    <a href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank" style="text-decoration:none;">
+      <div class="stat-card" style="cursor:pointer;">
+        <div class="stat-label">📅 Content Plans</div>
+        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
+      </div>
+    </a>
+    <a href="https://www.notion.so/3349c88af9ee812cad1cc5745dd61575" target="_blank" style="text-decoration:none;">
+      <div class="stat-card" style="cursor:pointer;">
+        <div class="stat-label">📊 Usage Log</div>
+        <div style="font-size:12px; color:var(--cyan); margin-top:8px; font-family:'Space Mono',monospace;">Open →</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span>Inclusify Studio</span> AI Command Center · Built with Claude Code · <span>github.com/Patxsoccer17/inclusify-ai-studio</span>
+  </footer>
+
+</div>
+
+<script>
+  // Live clock
+  function updateClock() {
+    const now = new Date();
+    const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('clock').textContent = now.toLocaleString('en-US', options);
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
