@@ -58,5 +58,5 @@ List all URLs referenced.
 - Write clearly. No jargon. Paragraphs fine when needed.
 - If a brand looks like a strong Inclusify fit, flag it clearly with a note.
 - Keep outreach angles specific and actionable — not generic advice.
-- Create all pages as a child of the AI Studio Hub (Notion page ID: 3349c88af9ee81168ccaf94df5b86432)
+- Create each day's output as a child page inside "Agency Intel" (Notion page ID: 3349c88af9ee81f588e0d3690bac9b00)
 - Log token usage at the bottom of the Notion page: `Tokens used: [input tokens] in / [output tokens] out`

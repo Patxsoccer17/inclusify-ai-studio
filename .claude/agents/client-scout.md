@@ -97,5 +97,5 @@ List all URLs referenced.
 - Bumbleberry is a honey spreads brand that sells from a warehouse — not a farm. Do not reference farms, bees, hives, or agriculture unless it directly relates to their product story.
 - Keep content ideas specific and ready to execute — not vague.
 - Reel and carousel ideas for Bumbleberry should be actionable for Danielle (the SMM contractor) with no extra thinking needed.
-- Create all pages as a child of the AI Studio Hub (Notion page ID: 3349c88af9ee81168ccaf94df5b86432)
+- Create each week's output as a child page inside "Client Intel" (Notion page ID: 3349c88af9ee81258be2fb4f41611efb)
 - Log token usage at the bottom: `Tokens used: [input tokens] in / [output tokens] out`

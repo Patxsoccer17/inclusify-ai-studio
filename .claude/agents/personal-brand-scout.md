@@ -69,5 +69,5 @@ List all URLs referenced.
 - If a search area has no strong news that day, note it briefly and move on. Never pad with weak content.
 - Aim for 3-5 LinkedIn ideas and 2-3 Instagram ideas per run.
 - Every hook must be specific. "Why Deaf creators are the most loyal audience on Instagram" beats "Deaf creators matter."
-- Create all pages as a child of the AI Studio Hub (Notion page ID: 3349c88af9ee81168ccaf94df5b86432)
+- Create each day's output as a child page inside "Personal Brand Intel" (Notion page ID: 3349c88af9ee81a58b1ec97f4df5347b)
 - Log token usage at the bottom of the Notion page: `Tokens used: [input tokens] in / [output tokens] out`
