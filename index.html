@@ -1,535 +1,536 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inclusify AI Studio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inclusify HQ — Live Ops</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
     :root {
-      --bg: #070710;
-      --card: #0d0d1a;
-      --card-hover: #111122;
-      --border: #1e1e3a;
+      --bg: #05050f;
       --cyan: #00f5ff;
       --purple: #a855f7;
       --green: #22d3a5;
       --orange: #f97316;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --glow-cyan: 0 0 20px rgba(0,245,255,0.3);
-      --glow-purple: 0 0 20px rgba(168,85,247,0.3);
+      --magenta: #ec4899;
+      --blue: #60a5fa;
+      --white: #e2e8f0;
+      --muted: #4a5568;
+      --card: #09091a;
+      --border: #181830;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background: var(--bg);
-      color: var(--text);
+      color: var(--white);
       font-family: 'Space Grotesk', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Grid background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Particle canvas */
-    #particles {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 24px;
-    }
-
-    /* Header */
-    header {
+    /* ── HEADER ───────────────────────────────────── */
+    .hq-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      margin-bottom: 48px;
-      flex-wrap: wrap;
+      padding: 14px 32px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,5,15,0.97);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .hq-brand {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hq-brand .sep { color: var(--border); }
+    .hq-brand .live { color: var(--cyan); }
+
+    .hq-right {
+      display: flex;
+      align-items: center;
       gap: 16px;
     }
 
-    .logo { display: flex; flex-direction: column; gap: 4px; }
-
-    .logo-eyebrow {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--cyan);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .logo-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-
-    .logo-title span { color: var(--cyan); }
-
-    .header-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
-
-    .live-badge {
+    .chip {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(34,211,165,0.1);
-      border: 1px solid rgba(34,211,165,0.3);
+      gap: 6px;
+      padding: 5px 12px;
       border-radius: 100px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--green);
       font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      border: 1px solid;
     }
 
-    .live-dot {
-      width: 6px;
-      height: 6px;
+    .chip.green { color: var(--green); border-color: rgba(34,211,165,0.3); background: rgba(34,211,165,0.07); }
+    .chip.cyan  { color: var(--cyan); border-color: rgba(0,245,255,0.2); background: rgba(0,245,255,0.05); }
+
+    .dot {
+      width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--green);
-      animation: pulse-green 2s ease infinite;
+      background: currentColor;
+      animation: blink 2s ease infinite;
     }
 
-    @keyframes pulse-green {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,211,165,0.4); }
-      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,211,165,0); }
+    @keyframes blink {
+      0%,100% { opacity:1; box-shadow: 0 0 0 0 currentColor; }
+      50% { opacity:.6; box-shadow: 0 0 0 3px transparent; }
     }
 
-    .last-sync {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-    }
-
-    /* Section labels */
-    .section-label {
+    #clock-display {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       color: var(--muted);
+    }
+
+    /* ── SCENE ────────────────────────────────────── */
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #02020c 0%, #060614 55%, #08081a 100%);
+    }
+
+    #rain-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Sky */
+    .sky {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .moon {
+      position: absolute;
+      top: 28px;
+      right: 100px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, #f0e8d0, #c8b88a);
+      box-shadow: 0 0 24px rgba(240,232,208,.35), 0 0 80px rgba(240,232,208,.08);
+    }
+
+    .moon::after {
+      content: '';
+      position: absolute;
+      top: -3px; left: 10px;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: #04040e;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--dur) ease infinite;
+    }
+
+    @keyframes twinkle {
+      0%,100% { opacity: var(--a); }
+      50% { opacity: calc(var(--a) * 0.3); }
+    }
+
+    /* Buildings */
+    .bld-layer {
+      position: absolute;
+      bottom: 70px;
+      left: 0; right: 0;
+      z-index: 2;
+      height: 340px;
+    }
+
+    .bld-layer.far  { z-index: 2; filter: brightness(0.4) saturate(0.5); }
+    .bld-layer.near { z-index: 4; }
+
+    .bld {
+      position: absolute;
+      bottom: 0;
+      background: #07071a;
+      border-top: 1px solid rgba(100,100,200,0.15);
+      border-left: 1px solid rgba(100,100,200,0.08);
+      border-right: 1px solid rgba(100,100,200,0.08);
+      overflow: hidden;
+    }
+
+    .win {
+      position: absolute;
+      border-radius: 1px;
+    }
+
+    /* Neon signs on buildings */
+    .neon-sign {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
       letter-spacing: 2px;
+      padding: 3px 6px;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+    }
+
+    /* Ground */
+    .sidewalk {
+      position: absolute;
+      bottom: 70px;
+      left: 0; right: 0;
+      height: 14px;
+      background: #0b0b1e;
+      border-top: 1px solid rgba(80,80,180,0.2);
+      z-index: 5;
+    }
+
+    .road {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 70px;
+      background: #060610;
+      border-top: 1px solid rgba(80,80,180,0.15);
+      z-index: 5;
+    }
+
+    /* Road dashes */
+    .road::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0; right: 0;
+      height: 2px;
+      background: repeating-linear-gradient(90deg,
+        rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 40px,
+        transparent 40px, transparent 90px);
+    }
+
+    /* Neon road glow reflection */
+    .road-glow {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 70px;
+      background: linear-gradient(90deg,
+        rgba(0,245,255,0.025) 0%, rgba(168,85,247,0.02) 50%, rgba(0,245,255,0.025) 100%);
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    /* Cars */
+    .cars-layer {
+      position: absolute;
+      bottom: 12px;
+      left: 0; right: 0;
+      height: 32px;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    .car {
+      position: absolute;
+      bottom: 0;
+      height: 22px;
+      border-radius: 6px 6px 3px 3px;
+    }
+
+    .car::before {
+      content: '';
+      position: absolute;
+      top: -10px; left: 18%;
+      width: 64%; height: 12px;
+      background: inherit;
+      border-radius: 5px 5px 0 0;
+      opacity: .75;
+    }
+
+    /* Headlights */
+    .car::after {
+      content: '';
+      position: absolute;
+      right: -28px; top: 50%;
+      transform: translateY(-50%);
+      width: 28px; height: 5px;
+      background: linear-gradient(90deg, rgba(255,255,200,.9), transparent);
+      border-radius: 0 3px 3px 0;
+    }
+
+    @keyframes car-drive { from { left: -160px; } to { left: calc(100% + 60px); } }
+
+    /* ── AGENTS (bots) ───────────────────────────── */
+    .agents-layer {
+      position: absolute;
+      bottom: 83px;
+      left: 0; right: 0;
+      height: 120px;
+      z-index: 8;
+      pointer-events: none;
+    }
+
+    .bot {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--color);
+      animation:
+        bot-walk var(--spd) linear var(--dly) infinite,
+        bot-bob  0.65s ease-in-out infinite;
+    }
+
+    .bot.idle {
+      opacity: 0.3;
+      animation: bot-walk var(--spd) linear var(--dly) infinite;
+    }
+
+    @keyframes bot-walk { from { left: -90px; } to { left: calc(100% + 90px); } }
+
+    @keyframes bot-bob {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      25%     { transform: translateY(-7px) rotate(-1.5deg); }
+      75%     { transform: translateY(-7px) rotate(1.5deg); }
+    }
+
+    .bot-bubble {
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      background: rgba(4,4,14,0.92);
+      border: 1px solid currentColor;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: currentColor;
+      box-shadow: 0 0 12px currentColor;
+      animation: bubble-fade 5s ease infinite var(--bdly, 0s);
+      pointer-events: none;
+    }
+
+    .bot-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: currentColor;
+    }
+
+    @keyframes bubble-fade {
+      0%,8%    { opacity:0; transform: translateX(-50%) translateY(4px); }
+      18%,78%  { opacity:1; transform: translateX(-50%) translateY(0); }
+      90%,100% { opacity:0; transform: translateX(-50%) translateY(-4px); }
+    }
+
+    .bot-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      text-shadow: 0 0 8px currentColor;
+      margin-top: 2px;
+    }
+
+    .bot-svg {
+      filter: drop-shadow(0 0 7px currentColor);
+      width: 42px;
+      height: 58px;
+    }
+
+    /* ── DASHBOARD ────────────────────────────────── */
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 28px 40px;
+    }
+
+    .section-lbl {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .section-label::after {
+    .section-lbl::after {
       content: '';
       flex: 1;
       height: 1px;
       background: var(--border);
     }
 
-    /* Stats row */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 40px;
+    /* Agent cards */
+    .agent-cards-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+      padding-bottom: 4px;
     }
 
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--cyan);
-      font-family: 'Space Mono', monospace;
-      line-height: 1;
-    }
-
-    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-    .usage-bar-wrap {
-      margin-top: 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 100px;
-      height: 4px;
-      overflow: hidden;
-    }
-
-    .usage-bar-fill {
-      height: 100%;
-      border-radius: 100px;
-      background: linear-gradient(90deg, var(--cyan), var(--purple));
-      transition: width 1s ease;
-    }
-
-    /* Agent grid */
-    .agent-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .agent-card {
+    .agent-card-mini {
+      flex-shrink: 0;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 24px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-    }
-
-    .agent-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .agent-card:hover {
-      background: var(--card-hover);
-      border-color: rgba(0,245,255,0.3);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,245,255,0.08);
-    }
-
-    .agent-card:hover::before {
-      opacity: 1;
-      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-    }
-
-    .agent-card.scheduled { border-color: rgba(0,245,255,0.15); }
-    .agent-card.on-demand { border-color: rgba(168,85,247,0.15); }
-
-    /* Running state */
-    .agent-card.is-running {
-      border-color: rgba(34,211,165,0.5) !important;
-      box-shadow: 0 0 30px rgba(34,211,165,0.15), inset 0 0 30px rgba(34,211,165,0.03);
-      animation: card-pulse 3s ease infinite;
-    }
-
-    @keyframes card-pulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(34,211,165,0.1), inset 0 0 20px rgba(34,211,165,0.02); }
-      50% { box-shadow: 0 0 40px rgba(34,211,165,0.25), inset 0 0 30px rgba(34,211,165,0.05); }
-    }
-
-    .agent-card.is-running::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(34,211,165,0.04), transparent);
-      animation: card-sweep 2.5s ease infinite;
-    }
-
-    @keyframes card-sweep {
-      0% { left: -60%; }
-      100% { left: 160%; }
-    }
-
-    .agent-card-top {
+      padding: 18px 14px;
+      width: 148px;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s ease;
     }
 
-    .agent-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+    .agent-card-mini.active {
+      border-color: rgba(var(--cr), 0.4);
+      box-shadow: 0 0 24px rgba(var(--cr), 0.1);
+    }
+
+    .agent-card-mini:hover {
+      transform: translateY(-3px);
+      border-color: rgba(var(--cr), 0.5);
+      box-shadow: 0 6px 28px rgba(var(--cr), 0.15);
+    }
+
+    .acard-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 22px;
+      background: rgba(var(--cr), 0.1);
+      border: 1px solid rgba(var(--cr), 0.25);
     }
 
-    .icon-cyan { background: rgba(0,245,255,0.1); }
-    .icon-purple { background: rgba(168,85,247,0.1); }
-    .icon-green { background: rgba(34,211,165,0.1); }
-    .icon-orange { background: rgba(249,115,22,0.1); }
-
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-family: 'Space Mono', monospace;
-    }
-
-    .status-badge.idle {
-      background: rgba(100,116,139,0.1);
-      color: var(--muted);
-      border: 1px solid rgba(100,116,139,0.2);
-    }
-
-    .status-badge.running {
-      background: rgba(34,211,165,0.12);
-      color: var(--green);
-      border: 1px solid rgba(34,211,165,0.4);
-    }
-
-    .status-badge.scheduled-badge {
-      background: rgba(0,245,255,0.08);
-      color: var(--cyan);
-      border: 1px solid rgba(0,245,255,0.2);
-    }
-
-    .status-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-    }
-
-    .status-badge.idle .status-dot { background: var(--muted); }
-    .status-badge.running .status-dot {
-      background: var(--green);
-      animation: pulse-green 1s ease infinite;
-    }
-    .status-badge.scheduled-badge .status-dot { background: var(--cyan); }
-
-    .agent-name {
-      font-size: 15px;
+    .acard-name {
+      font-size: 12px;
       font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
+      text-align: center;
+      color: var(--white);
     }
 
-    .agent-role {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .agent-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .meta-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .meta-key {
-      font-size: 11px;
-      color: var(--muted);
+    .acard-status {
+      font-size: 10px;
       font-family: 'Space Mono', monospace;
+      padding: 3px 12px;
+      border-radius: 100px;
+      border: 1px solid;
     }
 
-    .meta-val {
-      font-size: 11px;
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
+    .acard-status.on   { color: var(--green);  border-color: rgba(34,211,165,0.4);  background: rgba(34,211,165,0.08);  }
+    .acard-status.idle { color: var(--muted);  border-color: rgba(74,85,104,0.3);   background: rgba(74,85,104,0.06);   }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
     }
 
-    .meta-val.cyan { color: var(--cyan); }
-    .meta-val.purple { color: var(--purple); }
-
-    .agent-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--cyan);
-      text-decoration: none;
-      font-family: 'Space Mono', monospace;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-
-    .agent-link:hover { opacity: 1; }
-
-    /* Pipeline */
-    .pipeline {
+    .stat-block {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 40px;
+      border-radius: 14px;
+      padding: 22px 24px;
     }
 
-    .pipeline-title { font-size: 15px; font-weight: 600; margin-bottom: 24px; }
-
-    .pipeline-flow {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .pipe-node {
-      background: rgba(0,245,255,0.06);
-      border: 1px solid rgba(0,245,255,0.15);
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 12px;
-      color: var(--cyan);
+    .stat-lbl {
       font-family: 'Space Mono', monospace;
-      white-space: nowrap;
-    }
-
-    .pipe-node.purple-node {
-      background: rgba(168,85,247,0.06);
-      border-color: rgba(168,85,247,0.15);
-      color: var(--purple);
-    }
-
-    .pipe-node.green-node {
-      background: rgba(34,211,165,0.06);
-      border-color: rgba(34,211,165,0.15);
-      color: var(--green);
-    }
-
-    /* Animated pipeline arrow */
-    .pipe-arrow-wrap {
-      position: relative;
-      width: 48px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .pipe-arrow-line {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      transform: translateY(-50%);
-    }
-
-    .pipe-arrow-head {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       color: var(--muted);
-      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .stat-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 34px;
+      font-weight: 700;
       line-height: 1;
     }
 
-    .pipe-dot {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 6px var(--cyan);
-      animation: dot-flow 2s linear infinite;
-    }
+    .stat-val.c-cyan    { color: var(--cyan); }
+    .stat-val.c-purple  { color: var(--purple); }
+    .stat-val.c-green   { color: var(--green); }
+    .stat-val.c-orange  { color: var(--orange); }
 
-    .pipe-dot.purple { background: var(--purple); box-shadow: 0 0 6px var(--purple); animation-delay: 0.5s; }
-    .pipe-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); animation-delay: 1s; }
-
-    @keyframes dot-flow {
-      0% { left: 0; opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { left: calc(100% - 6px); opacity: 0; }
-    }
-
-    .pipe-label {
-      font-size: 10px;
+    .stat-sub {
+      font-size: 11px;
       color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 1px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
-    .pipe-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Activity terminal */
-    .terminal {
-      background: #080812;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 0;
-      margin-bottom: 40px;
+    /* Progress bar inside stat */
+    .mini-progress {
+      margin-top: 10px;
+      height: 4px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
       overflow: hidden;
     }
 
-    .terminal-header {
+    .mini-progress-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      width: 0;
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Terminal */
+    .terminal {
+      background: #040410;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .term-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 20px;
+      gap: 10px;
+      padding: 12px 18px;
       border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.015);
     }
 
-    .terminal-dots {
-      display: flex;
-      gap: 6px;
-    }
+    .term-dots { display: flex; gap: 5px; }
+    .term-dot  { width: 11px; height: 11px; border-radius: 50%; }
+    .td-r { background: #ff5f57; }
+    .td-y { background: #ffbd2e; }
+    .td-g { background: #28c840; }
 
-    .terminal-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .td-red { background: #ff5f57; }
-    .td-yellow { background: #ffbd2e; }
-    .td-green { background: #28c840; }
-
-    .terminal-title {
+    .term-title {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       color: var(--muted);
@@ -537,647 +538,476 @@
       text-align: center;
     }
 
-    .terminal-live {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .term-live {
       font-family: 'Space Mono', monospace;
       font-size: 10px;
       color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .terminal-body {
-      padding: 16px 20px;
-      height: 180px;
+    .term-body {
+      padding: 14px 18px;
+      height: 190px;
       overflow: hidden;
       position: relative;
     }
 
     .log-line {
+      display: flex;
+      gap: 10px;
       font-family: 'Space Mono', monospace;
       font-size: 11px;
-      line-height: 1.8;
-      display: flex;
-      gap: 12px;
+      line-height: 1.9;
       opacity: 0;
-      animation: log-appear 0.3s ease forwards;
+      animation: log-in .25s ease forwards;
     }
 
-    @keyframes log-appear {
-      from { opacity: 0; transform: translateX(-4px); }
-      to { opacity: 1; transform: translateX(0); }
+    @keyframes log-in {
+      from { opacity:0; transform: translateX(-6px); }
+      to   { opacity:1; transform: translateX(0); }
     }
 
-    .log-time { color: var(--muted); flex-shrink: 0; }
-    .log-agent { flex-shrink: 0; }
-    .log-agent.cyan { color: var(--cyan); }
-    .log-agent.purple { color: var(--purple); }
-    .log-agent.green { color: var(--green); }
-    .log-agent.orange { color: var(--orange); }
-    .log-msg { color: var(--text); opacity: 0.8; }
-    .log-msg .dim { color: var(--muted); }
+    .l-time { color: var(--muted); flex-shrink: 0; width: 58px; }
+    .l-agent { flex-shrink: 0; width: 170px; }
+    .l-agent.cyan    { color: var(--cyan); }
+    .l-agent.purple  { color: var(--purple); }
+    .l-agent.green   { color: var(--green); }
+    .l-agent.magenta { color: var(--magenta); }
+    .l-msg { color: rgba(226,232,240,0.75); }
 
-    .cursor-blink {
+    .cursor {
       display: inline-block;
-      width: 6px;
-      height: 12px;
+      width: 7px; height: 13px;
       background: var(--cyan);
-      animation: blink 1s step-end infinite;
+      animation: cur 1s step-end infinite;
       vertical-align: middle;
       margin-left: 2px;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* Notion links */
-    .notion-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-      margin-bottom: 40px;
-    }
-
-    .notion-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      text-decoration: none;
-      display: block;
-      transition: all 0.2s ease;
-    }
-
-    .notion-card:hover {
-      border-color: rgba(0,245,255,0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,245,255,0.08);
-    }
-
-    .notion-card-label {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .notion-card-open {
-      font-size: 12px;
-      color: var(--cyan);
-      font-family: 'Space Mono', monospace;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 24px 0;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-    }
-
-    footer span { color: var(--cyan); }
+    @keyframes cur { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
     /* Scanline */
-    @keyframes scanline {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100vh); }
+    .scanline {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
+      background: repeating-linear-gradient(0deg,
+        transparent 0, transparent 3px,
+        rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
     }
 
-    .scanline {
+    .sweep {
       position: fixed;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(transparent, rgba(0,245,255,0.04), transparent);
-      animation: scanline 10s linear infinite;
+      background: linear-gradient(transparent, rgba(0,245,255,0.05), transparent);
+      animation: sweep 12s linear infinite;
       pointer-events: none;
       z-index: 999;
     }
 
+    @keyframes sweep { from { top:-2px; } to { top:100vh; } }
+
     @media (max-width: 768px) {
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .agent-grid { grid-template-columns: 1fr; }
-      .notion-grid { grid-template-columns: repeat(2, 1fr); }
+      .scene { height: 340px; }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .dashboard { padding: 20px 16px; }
     }
   </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
 <div class="scanline"></div>
+<div class="sweep"></div>
 
-<div class="container">
+<!-- Header -->
+<header class="hq-header">
+  <div class="hq-brand">
+    INCLUSIFY HQ <span class="sep">—</span> <span class="live">LIVE OPS</span>
+  </div>
+  <div class="hq-right">
+    <div class="chip green"><div class="dot"></div><span id="active-count">3 active</span></div>
+    <div class="chip cyan"><div class="dot"></div>ONLINE</div>
+    <div id="clock-display">—</div>
+  </div>
+</header>
 
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <div class="logo-eyebrow">// Inclusify Studio</div>
-      <div class="logo-title">AI <span>Studio</span> Command Center</div>
-    </div>
-    <div class="header-right">
-      <div class="live-badge">
-        <div class="live-dot"></div>
-        SYSTEM ONLINE
-      </div>
-      <div class="last-sync" id="clock">Loading...</div>
-    </div>
-  </header>
+<!-- City Scene -->
+<div class="scene">
+  <canvas id="rain-canvas"></canvas>
 
-  <!-- Stats Row -->
-  <div class="section-label">System Overview</div>
+  <!-- Sky -->
+  <div class="sky" id="sky">
+    <div class="moon"></div>
+  </div>
+
+  <!-- Building layers -->
+  <div class="bld-layer far"  id="bld-far"></div>
+  <div class="bld-layer near" id="bld-near"></div>
+
+  <!-- Ground -->
+  <div class="sidewalk"></div>
+  <div class="road"></div>
+  <div class="road-glow"></div>
+
+  <!-- Cars -->
+  <div class="cars-layer" id="cars-layer"></div>
+
+  <!-- Agents -->
+  <div class="agents-layer" id="agents-layer"></div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard">
+
+  <!-- Agent cards -->
+  <div class="section-lbl">Agents</div>
+  <div class="agent-cards-row" id="agent-cards-row"></div>
+
+  <!-- Stats -->
+  <div class="section-lbl">Studio Overview</div>
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">Total Agents</div>
-      <div class="stat-value">7</div>
+    <div class="stat-block">
+      <div class="stat-lbl">Revenue</div>
+      <div class="stat-val c-cyan">$13.3k</div>
+      <div class="stat-sub">Monthly recurring</div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="rev-bar"></div></div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-lbl">Goal</div>
+      <div class="stat-val c-purple">$25k</div>
+      <div class="stat-sub">6-month target</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-lbl">Clients</div>
+      <div class="stat-val c-green">4</div>
+      <div class="stat-sub">Convo · ASL Bloom · Bumbleberry · Justin</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-lbl">Agents</div>
+      <div class="stat-val c-orange">7</div>
       <div class="stat-sub">3 scheduled · 4 on demand</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Scheduled Runs</div>
-      <div class="stat-value">2</div>
-      <div class="stat-sub">Daily · 1 weekly</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Outputs This Week</div>
-      <div class="stat-value" id="output-count">—</div>
-      <div class="stat-sub">Check Notion hub</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Monthly Usage</div>
-      <div class="stat-value" style="font-size:18px;">MAX</div>
-      <div class="stat-sub">Covered by Max plan</div>
-      <div class="usage-bar-wrap" style="margin-top:10px;">
-        <div class="usage-bar-fill" id="usage-bar" style="width: 0%;"></div>
-      </div>
-    </div>
   </div>
 
-  <!-- Scheduled Agents -->
-  <div class="section-label">Scheduled Agents — Run Automatically</div>
-  <div class="agent-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom: 16px;">
-
-    <div class="agent-card scheduled is-running" id="card-personal-brand">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-cyan">📡</div>
-        <div class="status-badge running" id="badge-personal-brand">
-          <div class="status-dot"></div>
-          <span id="badge-text-personal-brand">RUNNING</span>
-        </div>
-      </div>
-      <div class="agent-name">Personal Brand Scout</div>
-      <div class="agent-role">Searches the web for Deaf creator economy news, social media trends, AI tools, and new platform updates. Drops ideas for LinkedIn and Instagram.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Schedule</span>
-          <span class="meta-val cyan">Daily · 6:00 AM</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Output</span>
-          <span class="meta-val">Notion → Personal Brand Intel</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Sonnet</span>
-        </div>
-      </div>
-      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank">→ View outputs in Notion</a>
-    </div>
-
-    <div class="agent-card scheduled" id="card-agency-intel">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-cyan">🏢</div>
-        <div class="status-badge scheduled-badge" id="badge-agency-intel">
-          <div class="status-dot"></div>
-          <span id="badge-text-agency-intel">DAILY 6:30AM</span>
-        </div>
-      </div>
-      <div class="agent-name">Agency Intel Scout</div>
-      <div class="agent-role">Tracks influencer marketing industry news, SMM trends, brand activity, and surfaces new outreach targets for Inclusify Studio.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Schedule</span>
-          <span class="meta-val cyan">Daily · 6:30 AM</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Output</span>
-          <span class="meta-val">Notion → Agency Intel</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Sonnet</span>
-        </div>
-      </div>
-      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank">→ View outputs in Notion</a>
-    </div>
-
-    <div class="agent-card scheduled" id="card-client-scout">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-green">👥</div>
-        <div class="status-badge scheduled-badge" id="badge-client-scout">
-          <div class="status-dot"></div>
-          <span id="badge-text-client-scout">MON 6AM</span>
-        </div>
-      </div>
-      <div class="agent-name">Client Scout</div>
-      <div class="agent-role">Weekly deep research for Convo, ASL Bloom, and Bumbleberry Farms. Includes competitor social listening and Reel + carousel ideas for Danielle.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Schedule</span>
-          <span class="meta-val cyan">Weekly · Monday 6:00 AM</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Output</span>
-          <span class="meta-val">Notion → Client Intel</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Sonnet</span>
-        </div>
-      </div>
-      <a class="agent-link" href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank">→ View outputs in Notion</a>
-    </div>
-
-  </div>
-
-  <!-- On-Demand Agents -->
-  <div class="section-label" style="margin-top:32px;">On-Demand Agents — Trigger When You Need Them</div>
-  <div class="agent-grid" style="grid-template-columns: repeat(4,1fr);">
-
-    <div class="agent-card on-demand">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-purple">📅</div>
-        <div class="status-badge idle">
-          <div class="status-dot"></div>
-          ON DEMAND
-        </div>
-      </div>
-      <div class="agent-name">Brand Strategist</div>
-      <div class="agent-role">Builds your weekly content calendar — 5 LinkedIn + 5 Instagram posts with hooks, pillars, and briefs.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Trigger</span>
-          <span class="meta-val purple">"Build content plan"</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Opus</span>
-        </div>
-      </div>
-      <a class="agent-link" href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank">→ View outputs in Notion</a>
-    </div>
-
-    <div class="agent-card on-demand">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-purple">✍️</div>
-        <div class="status-badge idle">
-          <div class="status-dot"></div>
-          ON DEMAND
-        </div>
-      </div>
-      <div class="agent-name">Copywriter</div>
-      <div class="agent-role">Writes finished LinkedIn and Instagram posts in your exact voice. LinkedIn is priority. Story, hook, list, or thought piece formats.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Trigger</span>
-          <span class="meta-val purple">"Write a post about X"</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Opus</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="agent-card on-demand">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-orange">🎨</div>
-        <div class="status-badge idle">
-          <div class="status-dot"></div>
-          ON DEMAND
-        </div>
-      </div>
-      <div class="agent-name">Carousel Builder</div>
-      <div class="agent-role">Builds carousels directly in Canva for Patrick's Instagram or Bumbleberry Farms. 4-9 slides, brand colors applied automatically.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Trigger</span>
-          <span class="meta-val purple">"Build carousel for X"</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Sonnet</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="agent-card on-demand">
-      <div class="agent-card-top">
-        <div class="agent-icon icon-purple">🎯</div>
-        <div class="status-badge idle">
-          <div class="status-dot"></div>
-          ON DEMAND
-        </div>
-      </div>
-      <div class="agent-name">Prospector</div>
-      <div class="agent-role">Researches a prospect and writes all 3 LinkedIn outreach messages personalized and ready to copy-paste. Learns from replies that work.</div>
-      <div class="agent-meta">
-        <div class="meta-row">
-          <span class="meta-key">Trigger</span>
-          <span class="meta-val purple">"Draft outreach for X"</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-key">Model</span>
-          <span class="meta-val">Opus</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Live Activity Terminal -->
-  <div class="section-label">Live Activity Feed</div>
+  <!-- Live Feed -->
+  <div class="section-lbl">Live Activity Feed</div>
   <div class="terminal">
-    <div class="terminal-header">
-      <div class="terminal-dots">
-        <div class="terminal-dot td-red"></div>
-        <div class="terminal-dot td-yellow"></div>
-        <div class="terminal-dot td-green"></div>
+    <div class="term-header">
+      <div class="term-dots">
+        <div class="term-dot td-r"></div>
+        <div class="term-dot td-y"></div>
+        <div class="term-dot td-g"></div>
       </div>
-      <div class="terminal-title">inclusify-studio — agent-log</div>
-      <div class="terminal-live">
-        <div class="live-dot" style="width:5px;height:5px;"></div>
-        LIVE
-      </div>
+      <div class="term-title">inclusify-studio — agent-log — zsh</div>
+      <div class="term-live"><div class="dot" style="width:5px;height:5px;"></div>LIVE</div>
     </div>
-    <div class="terminal-body" id="terminal-body">
-    </div>
+    <div class="term-body" id="term-body"></div>
   </div>
-
-  <!-- Pipeline -->
-  <div class="section-label">Agent Pipeline</div>
-  <div class="pipeline">
-    <div style="display:flex; flex-direction:column; gap:20px;">
-      <div>
-        <div class="pipe-label" style="margin-bottom:10px;">AUTOMATED PIPELINE (runs while you sleep)</div>
-        <div class="pipeline-flow">
-          <div class="pipe-col">
-            <div class="pipe-node">📡 Personal Brand Scout</div>
-            <div class="pipe-label">Daily 6AM</div>
-          </div>
-          <div class="pipe-arrow-wrap">
-            <div class="pipe-arrow-line"></div>
-            <div class="pipe-dot"></div>
-            <div class="pipe-arrow-head">›</div>
-          </div>
-          <div class="pipe-col">
-            <div class="pipe-node purple-node">📅 Brand Strategist</div>
-            <div class="pipe-label">Weekly</div>
-          </div>
-          <div class="pipe-arrow-wrap">
-            <div class="pipe-arrow-line"></div>
-            <div class="pipe-dot purple"></div>
-            <div class="pipe-arrow-head">›</div>
-          </div>
-          <div class="pipe-col">
-            <div class="pipe-node purple-node">✍️ Copywriter</div>
-            <div class="pipe-label">On demand</div>
-          </div>
-          <div style="color:var(--border); font-size:12px; padding: 0 4px; font-family:'Space Mono',monospace;">+</div>
-          <div class="pipe-col">
-            <div class="pipe-node purple-node">🎨 Carousel Builder</div>
-            <div class="pipe-label">On demand (parallel)</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="pipe-label" style="margin-bottom:10px;">INDEPENDENT PIPELINES</div>
-        <div class="pipeline-flow">
-          <div class="pipe-col">
-            <div class="pipe-node">🏢 Agency Intel Scout</div>
-            <div class="pipe-label">Daily 6:30AM</div>
-          </div>
-          <div class="pipe-arrow-wrap">
-            <div class="pipe-arrow-line"></div>
-            <div class="pipe-dot" style="animation-delay:0.3s;"></div>
-            <div class="pipe-arrow-head">›</div>
-          </div>
-          <div class="pipe-col">
-            <div class="pipe-node purple-node">🎯 Prospector</div>
-            <div class="pipe-label">On demand</div>
-          </div>
-          <div style="color:var(--border); padding: 0 20px; font-size:12px; font-family:'Space Mono',monospace;">|</div>
-          <div class="pipe-col">
-            <div class="pipe-node green-node">👥 Client Scout</div>
-            <div class="pipe-label">Monday 6AM</div>
-          </div>
-          <div class="pipe-arrow-wrap">
-            <div class="pipe-arrow-line"></div>
-            <div class="pipe-dot green"></div>
-            <div class="pipe-arrow-head">›</div>
-          </div>
-          <div class="pipe-col">
-            <div class="pipe-node green-node">Notion → Client Intel</div>
-            <div class="pipe-label">Private</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notion Hub Links -->
-  <div class="section-label">Notion AI Studio Hub</div>
-  <div class="notion-grid">
-    <a href="https://www.notion.so/3349c88af9ee81a58b1ec97f4df5347b" target="_blank" class="notion-card">
-      <div class="notion-card-label">📡 Brand Intel</div>
-      <div class="notion-card-open">Open →</div>
-    </a>
-    <a href="https://www.notion.so/3349c88af9ee81f588e0d3690bac9b00" target="_blank" class="notion-card">
-      <div class="notion-card-label">🏢 Agency Intel</div>
-      <div class="notion-card-open">Open →</div>
-    </a>
-    <a href="https://www.notion.so/3349c88af9ee81258be2fb4f41611efb" target="_blank" class="notion-card">
-      <div class="notion-card-label">👥 Client Intel</div>
-      <div class="notion-card-open">Open →</div>
-    </a>
-    <a href="https://www.notion.so/3349c88af9ee8148bab4cc66669fbfe8" target="_blank" class="notion-card">
-      <div class="notion-card-label">📅 Content Plans</div>
-      <div class="notion-card-open">Open →</div>
-    </a>
-    <a href="https://www.notion.so/3349c88af9ee812cad1cc5745dd61575" target="_blank" class="notion-card">
-      <div class="notion-card-label">📊 Usage Log</div>
-      <div class="notion-card-open">Open →</div>
-    </a>
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    <span>Inclusify Studio</span> AI Command Center · Built with Claude Code · <span>github.com/Patxsoccer17/inclusify-ai-studio</span>
-  </footer>
 
 </div>
 
 <script>
-  // ── Live clock ──────────────────────────────────────────────
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('clock').textContent = now.toLocaleString('en-US', {
-      weekday:'short', month:'short', day:'numeric',
-      hour:'2-digit', minute:'2-digit', second:'2-digit'
-    });
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
+// ── Config ─────────────────────────────────────────────────────────────────
+const AGENTS = [
+  { id:'brand-scout',  name:'Brand Scout',   emoji:'📡', color:'#00f5ff', cr:'0,245,255',   spd:'24s', dly:'-4s',  active:true,
+    msgs:['Scanning Deaf creator news...','Found 4 LinkedIn ideas','Searching AI tool updates...','Writing to Notion...','Run complete ✓'] },
+  { id:'agency-intel', name:'Agency Intel',  emoji:'🏢', color:'#a855f7', cr:'168,85,247',  spd:'32s', dly:'-14s', active:true,
+    msgs:['Tracking influencer industry...','Found 2 outreach targets','Flagging for Prospector...','Writing to Notion...','Done ✓'] },
+  { id:'client-scout', name:'Client Scout',  emoji:'👥', color:'#22d3a5', cr:'34,211,165',  spd:'40s', dly:'-26s', active:false,
+    msgs:['Monitoring Convo competitors','Researching Bumbleberry trends','Next run: Monday 6AM'] },
+  { id:'strategist',   name:'Strategist',    emoji:'📅', color:'#60a5fa', cr:'96,165,250',  spd:'28s', dly:'-9s',  active:false,
+    msgs:['Waiting for scouts...','Ready on demand','Trigger: "Build content plan"'] },
+  { id:'copywriter',   name:'Copywriter',    emoji:'✍️', color:'#e2e8f0', cr:'226,232,240', spd:'36s', dly:'-20s', active:false,
+    msgs:['Standing by...','Trigger: "Write a post about X"'] },
+  { id:'carousel',     name:'Carousel',      emoji:'🎨', color:'#f97316', cr:'249,115,22',  spd:'22s', dly:'-7s',  active:false,
+    msgs:['Canva MCP ready','Trigger: "Build carousel for X"'] },
+  { id:'prospector',   name:'Prospector',    emoji:'🎯', color:'#ec4899', cr:'236,72,153',  spd:'30s', dly:'-18s', active:true,
+    msgs:['Researching prospect...','Writing outreach messages','3 messages ready ✓','Logging to Notion...'] },
+];
 
-  // ── Usage bar animate in ─────────────────────────────────────
-  setTimeout(() => {
-    document.getElementById('usage-bar').style.width = '12%';
-  }, 600);
+const LOG_LINES = [
+  { time:'06:00:01', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Starting daily run...' },
+  { time:'06:00:04', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Searching: Deaf creator economy news' },
+  { time:'06:00:11', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Searching: Instagram + LinkedIn algorithm updates' },
+  { time:'06:00:18', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Searching: AI tools for marketing 2026' },
+  { time:'06:00:24', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Generated: 4 LinkedIn ideas · 3 Instagram ideas' },
+  { time:'06:00:27', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'→ Notion: Personal Brand Intel [written] ✓' },
+  { time:'06:00:28', agent:'[BRAND-SCOUT]',  cls:'cyan',    msg:'Run complete. 2,841 tokens in / 1,204 out' },
+  { time:'06:30:01', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'Starting daily run...' },
+  { time:'06:30:07', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'Searching: influencer marketing industry news' },
+  { time:'06:30:14', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'Searching: brands investing in creator campaigns' },
+  { time:'06:30:21', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'Found 2 outreach targets — flagged for Prospector' },
+  { time:'06:30:25', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'→ Notion: Agency Intel [written] ✓' },
+  { time:'06:30:26', agent:'[AGENCY-INTEL]', cls:'purple',  msg:'Run complete. 3,102 tokens in / 1,388 out' },
+  { time:'06:30:27', agent:'[PROSPECTOR]',   cls:'magenta', msg:'Prospect flagged by Agency Intel — researching...' },
+  { time:'06:30:31', agent:'[PROSPECTOR]',   cls:'magenta', msg:'ICP fit confirmed. Drafting 3 LinkedIn messages...' },
+  { time:'06:30:36', agent:'[PROSPECTOR]',   cls:'magenta', msg:'→ Notion: Prospector Log [written] ✓' },
+  { time:'—',        agent:'[SYSTEM]',       cls:'green',   msg:'All scheduled runs complete. Agents on standby.' },
+];
 
-  // ── Particle canvas ─────────────────────────────────────────
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
+// ── Clock ───────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('clock-display').textContent =
+    new Date().toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+updateClock();
+setInterval(updateClock, 1000);
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+// ── Stars ───────────────────────────────────────────────────────────────────
+const sky = document.getElementById('sky');
+for (let i = 0; i < 60; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 1.8 + 0.4;
+  const alpha = Math.random() * 0.5 + 0.2;
+  s.style.cssText = `
+    left:${Math.random()*100}%;
+    top:${Math.random()*55}%;
+    width:${size}px; height:${size}px;
+    --a:${alpha}; --dur:${Math.random()*3+2}s;
+    animation-delay:${Math.random()*4}s;
+  `;
+  sky.appendChild(s);
+}
 
-  const COLORS = ['rgba(0,245,255,', 'rgba(168,85,247,', 'rgba(34,211,165,'];
+// ── Buildings ───────────────────────────────────────────────────────────────
+const WIN_COLORS = [
+  'rgba(0,245,255,',
+  'rgba(168,85,247,',
+  'rgba(255,220,120,',
+  'rgba(180,200,255,',
+  'rgba(34,211,165,',
+];
 
-  function createParticle() {
-    const c = COLORS[Math.floor(Math.random() * COLORS.length)];
-    return {
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: Math.random() * 1.5 + 0.3,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.4 + 0.1,
-      color: c
-    };
-  }
+const NEON_TEXTS = ['SCOUT','INTEL','24/7','LIVE','HQ','DATA'];
+const NEON_COLS  = ['#00f5ff','#a855f7','#f97316','#22d3a5','#ec4899'];
 
-  for (let i = 0; i < 80; i++) particles.push(createParticle());
+function makeBuildings(containerId, count, minH, maxH, minW, maxW, winSize, winGap, containerW) {
+  const c = document.getElementById(containerId);
+  const slot = containerW / count;
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('div');
+    b.className = 'bld';
+    const w = minW + Math.random() * (maxW - minW);
+    const h = minH + Math.random() * (maxH - minH);
+    const x = i * slot + (slot - w) / 2 + (Math.random() - 0.5) * 20;
+    b.style.cssText = `left:${x}px; width:${w}px; height:${h}px;`;
 
-  function drawParticles() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color + p.alpha + ')';
-      ctx.fill();
-    });
-    requestAnimationFrame(drawParticles);
-  }
-  drawParticles();
-
-  // ── Live activity terminal ───────────────────────────────────
-  const logLines = [
-    { time: '06:00:01', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Starting daily run...' },
-    { time: '06:00:03', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: Deaf creator economy news' },
-    { time: '06:00:09', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: Instagram algorithm updates' },
-    { time: '06:00:15', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Searching: AI tools for marketing' },
-    { time: '06:00:21', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Found 4 LinkedIn ideas · 3 Instagram ideas' },
-    { time: '06:00:24', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Writing to Notion → Personal Brand Intel ✓' },
-    { time: '06:00:25', agent: 'PERSONAL-BRAND-SCOUT', color: 'cyan',   msg: 'Run complete. Tokens: 2,841 in / 1,204 out' },
-    { time: '06:30:01', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Starting daily run...' },
-    { time: '06:30:04', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Searching: influencer marketing industry news' },
-    { time: '06:30:11', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Searching: brands investing in creator campaigns' },
-    { time: '06:30:19', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Found 2 outreach targets worth flagging' },
-    { time: '06:30:22', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Writing to Notion → Agency Intel ✓' },
-    { time: '06:30:23', agent: 'AGENCY-INTEL-SCOUT',   color: 'purple', msg: 'Run complete. Tokens: 3,102 in / 1,388 out' },
-    { time: '—',        agent: 'SYSTEM',               color: 'green',  msg: 'All scheduled agents complete. Standby.' },
-  ];
-
-  const body = document.getElementById('terminal-body');
-  let lineIndex = 0;
-
-  function addLogLine() {
-    if (lineIndex >= logLines.length) {
-      lineIndex = 0;
-      body.innerHTML = '';
-    }
-    const l = logLines[lineIndex++];
-    const div = document.createElement('div');
-    div.className = 'log-line';
-    div.innerHTML = `
-      <span class="log-time">${l.time}</span>
-      <span class="log-agent ${l.color}">[${l.agent}]</span>
-      <span class="log-msg">${l.msg}</span>
-    `;
-    body.appendChild(div);
-
-    // Keep only last 7 lines visible
-    const lines = body.querySelectorAll('.log-line');
-    if (lines.length > 7) lines[0].remove();
-
-    // Add cursor to last line
-    body.querySelectorAll('.cursor-blink').forEach(c => c.remove());
-    const cursor = document.createElement('span');
-    cursor.className = 'cursor-blink';
-    div.appendChild(cursor);
-  }
-
-  // Start after a short delay, then add lines periodically
-  setTimeout(() => {
-    addLogLine();
-    setInterval(addLogLine, 1800);
-  }, 1200);
-
-  // ── Simulated agent state cycling ───────────────────────────
-  // After 8s, move "running" state to agency intel scout, etc.
-  const agentCycle = [
-    { cardId: 'card-personal-brand', badgeId: 'badge-personal-brand', textId: 'badge-text-personal-brand', runningClass: 'cyan' },
-    { cardId: 'card-agency-intel',   badgeId: 'badge-agency-intel',   textId: 'badge-text-agency-intel',   runningClass: 'cyan' },
-    { cardId: 'card-client-scout',   badgeId: 'badge-client-scout',   textId: 'badge-text-client-scout',   runningClass: 'green' },
-  ];
-
-  let activeAgent = 0;
-
-  function setRunning(index) {
-    agentCycle.forEach((a, i) => {
-      const card = document.getElementById(a.cardId);
-      const badge = document.getElementById(a.badgeId);
-      const text = document.getElementById(a.textId);
-      if (i === index) {
-        card.classList.add('is-running');
-        badge.className = 'status-badge running';
-        text.textContent = 'RUNNING';
-      } else {
-        card.classList.remove('is-running');
-        if (i === 0) {
-          badge.className = 'status-badge scheduled-badge';
-          text.textContent = 'DAILY 6AM';
-        } else if (i === 1) {
-          badge.className = 'status-badge scheduled-badge';
-          text.textContent = 'DAILY 6:30AM';
-        } else {
-          badge.className = 'status-badge scheduled-badge';
-          text.textContent = 'MON 6AM';
+    // Windows
+    const cols = Math.floor((w - 8) / (winSize + winGap));
+    const rows = Math.floor((h - 8) / (winSize + winGap));
+    for (let r = 0; r < rows; r++) {
+      for (let cl = 0; cl < cols; cl++) {
+        if (Math.random() > 0.38) {
+          const win = document.createElement('div');
+          win.className = 'win';
+          const col = WIN_COLORS[Math.floor(Math.random() * WIN_COLORS.length)];
+          const alpha = Math.random() * 0.45 + 0.2;
+          const fx = 4 + cl * (winSize + winGap);
+          const fy = 4 + r * (winSize + winGap);
+          win.style.cssText = `
+            left:${fx}px; bottom:${fy}px;
+            width:${winSize}px; height:${winSize}px;
+            background:${col}${alpha});
+          `;
+          if (Math.random() > 0.82) {
+            const dur = (2 + Math.random() * 6).toFixed(1);
+            const dly = (Math.random() * 4).toFixed(1);
+            win.style.animation = `twinkle ${dur}s ease infinite ${dly}s`;
+            win.style['--a'] = alpha;
+          }
+          b.appendChild(win);
         }
       }
-    });
+    }
+
+    // Random neon sign on some buildings
+    if (Math.random() > 0.72 && h > 120) {
+      const sign = document.createElement('div');
+      sign.className = 'neon-sign';
+      const nc = NEON_COLS[Math.floor(Math.random() * NEON_COLS.length)];
+      const nt = NEON_TEXTS[Math.floor(Math.random() * NEON_TEXTS.length)];
+      sign.style.cssText = `
+        color:${nc}; right:6px; top:${10 + Math.random()*30}px;
+        text-shadow: 0 0 6px ${nc}, 0 0 12px ${nc};
+        box-shadow: 0 0 6px ${nc};
+        animation: blink ${(1.5+Math.random()*3).toFixed(1)}s ease infinite ${(Math.random()*2).toFixed(1)}s;
+      `;
+      sign.textContent = nt;
+      b.appendChild(sign);
+    }
+
+    c.appendChild(b);
+  }
+}
+
+const W = window.innerWidth;
+makeBuildings('bld-far',  16, 80,  180, 45, 90,  5, 4, W);
+makeBuildings('bld-near', 12, 130, 310, 65, 130, 8, 5, W);
+
+// ── Rain ────────────────────────────────────────────────────────────────────
+const rainCanvas = document.getElementById('rain-canvas');
+const rc = rainCanvas.getContext('2d');
+let RW, RH, drops = [];
+
+function resizeRain() {
+  RW = rainCanvas.width  = rainCanvas.offsetWidth;
+  RH = rainCanvas.height = rainCanvas.offsetHeight;
+}
+resizeRain();
+window.addEventListener('resize', resizeRain);
+
+for (let i = 0; i < 120; i++) {
+  drops.push({
+    x: Math.random() * RW,
+    y: Math.random() * RH,
+    len: 8 + Math.random() * 14,
+    spd: 8 + Math.random() * 10,
+    alpha: 0.05 + Math.random() * 0.12,
+  });
+}
+
+function drawRain() {
+  rc.clearRect(0, 0, RW, RH);
+  drops.forEach(d => {
+    rc.beginPath();
+    rc.strokeStyle = `rgba(140,180,255,${d.alpha})`;
+    rc.lineWidth = 0.7;
+    rc.moveTo(d.x, d.y);
+    rc.lineTo(d.x - 1, d.y + d.len);
+    rc.stroke();
+    d.y += d.spd;
+    d.x -= 0.5;
+    if (d.y > RH) { d.y = -d.len; d.x = Math.random() * RW; }
+  });
+  requestAnimationFrame(drawRain);
+}
+drawRain();
+
+// ── Cars ────────────────────────────────────────────────────────────────────
+const carColors = [
+  '#1a1a3e','#0a0a2a','#1e1e4a','#0d0d30','#16163a'
+];
+const carLayer = document.getElementById('cars-layer');
+for (let i = 0; i < 5; i++) {
+  const car = document.createElement('div');
+  car.className = 'car';
+  const w = 55 + Math.random() * 35;
+  const spd = 12 + Math.random() * 20;
+  const dly = -(Math.random() * spd);
+  const bot = Math.random() > 0.5 ? 4 : 0;
+  car.style.cssText = `
+    width:${w}px;
+    bottom:${bot}px;
+    background:${carColors[i % carColors.length]};
+    animation: car-drive ${spd}s linear ${dly}s infinite;
+    border: 1px solid rgba(100,100,200,0.15);
+  `;
+  carLayer.appendChild(car);
+}
+
+// ── Bot characters ──────────────────────────────────────────────────────────
+const botSVG = (color) => `
+<svg class="bot-svg" viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <line x1="22" y1="1" x2="22" y2="9" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="22" cy="1" r="2.5" fill="currentColor"/>
+  <rect x="7" y="9" width="30" height="20" rx="7" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+  <rect x="11" y="15" width="22" height="8" rx="3" fill="currentColor" opacity="0.9"/>
+  <circle cx="22" cy="19" r="2" fill="#040410"/>
+  <rect x="5" y="32" width="34" height="20" rx="7" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+  <circle cx="22" cy="42" r="4" fill="currentColor" opacity="0.55"/>
+  <rect x="-2" y="33" width="7" height="16" rx="3.5" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+  <rect x="39" y="33" width="7" height="16" rx="3.5" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+  <rect x="11" y="52" width="9" height="8" rx="3" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+  <rect x="24" y="52" width="9" height="8" rx="3" fill="#040410" stroke="currentColor" stroke-width="1.4"/>
+</svg>`;
+
+const agentsLayer = document.getElementById('agents-layer');
+let msgIndexes = {};
+
+AGENTS.forEach((a, i) => {
+  msgIndexes[a.id] = 0;
+  const div = document.createElement('div');
+  div.className = 'bot' + (a.active ? '' : ' idle');
+  div.style.cssText = `--color:${a.color}; --spd:${a.spd}; --dly:${a.dly}; --bdly:${i*0.8}s;`;
+  div.id = 'bot-' + a.id;
+
+  if (a.active) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bot-bubble';
+    bubble.id = 'bubble-' + a.id;
+    bubble.textContent = a.msgs[0];
+    div.appendChild(bubble);
   }
 
-  setRunning(0);
-  setInterval(() => {
-    activeAgent = (activeAgent + 1) % agentCycle.length;
-    setRunning(activeAgent);
-  }, 9000);
+  div.innerHTML += botSVG(a.color);
 
+  const name = document.createElement('div');
+  name.className = 'bot-name';
+  name.textContent = a.name;
+  div.appendChild(name);
+
+  agentsLayer.appendChild(div);
+});
+
+// Cycle bubble messages
+function cycleBubbles() {
+  AGENTS.filter(a => a.active).forEach(a => {
+    const bubble = document.getElementById('bubble-' + a.id);
+    if (!bubble) return;
+    msgIndexes[a.id] = (msgIndexes[a.id] + 1) % a.msgs.length;
+    bubble.textContent = a.msgs[msgIndexes[a.id]];
+  });
+}
+setInterval(cycleBubbles, 4500);
+
+// ── Agent cards (dashboard) ─────────────────────────────────────────────────
+const cardsRow = document.getElementById('agent-cards-row');
+AGENTS.forEach(a => {
+  const card = document.createElement('div');
+  card.className = 'agent-card-mini' + (a.active ? ' active' : '');
+  card.style.setProperty('--cr', a.cr);
+  card.innerHTML = `
+    <div class="acard-icon" style="--cr:${a.cr};">${a.emoji}</div>
+    <div class="acard-name">${a.name}</div>
+    <div class="acard-status ${a.active ? 'on' : 'idle'}">${a.active ? 'ON' : 'idle'}</div>
+  `;
+  cardsRow.appendChild(card);
+});
+
+// ── Revenue progress bar ────────────────────────────────────────────────────
+setTimeout(() => {
+  document.getElementById('rev-bar').style.width = '53%'; // 13.3/25 = 53%
+}, 700);
+
+// ── Terminal feed ───────────────────────────────────────────────────────────
+const termBody = document.getElementById('term-body');
+let logIdx = 0;
+
+function addLog() {
+  if (logIdx >= LOG_LINES.length) { logIdx = 0; termBody.innerHTML = ''; }
+  const l = LOG_LINES[logIdx++];
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  div.innerHTML = `
+    <span class="l-time">${l.time}</span>
+    <span class="l-agent ${l.cls}">${l.agent}</span>
+    <span class="l-msg">${l.msg}</span>
+  `;
+  termBody.appendChild(div);
+  const lines = termBody.querySelectorAll('.log-line');
+  if (lines.length > 8) lines[0].remove();
+  termBody.querySelectorAll('.cursor').forEach(c => c.remove());
+  const cur = document.createElement('span');
+  cur.className = 'cursor';
+  div.appendChild(cur);
+}
+
+setTimeout(() => { addLog(); setInterval(addLog, 1700); }, 800);
 </script>
 </body>
 </html>
