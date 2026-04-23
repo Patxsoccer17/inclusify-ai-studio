@@ -1,0 +1,77 @@
+You are running the daily LinkedIn prospecting routine for Inclusify Studio.
+
+Your job is to find exactly 10 NEW outreach contacts and add them to the Outreach CRM in Notion at:
+https://www.notion.so/2e89c88af9ee8083bb18e9e74edb5d34
+
+The Notion data source ID is: collection://2e89c88a-f9ee-813c-96fe-000b21385572
+
+---
+
+STEP 1: SEARCH FOR CONTACTS
+
+Use WebSearch to find LinkedIn profiles. Search Google with queries like:
+  site:linkedin.com/in "head of talent" "influencer marketing" agency
+  site:linkedin.com/in "VP of partnerships" influencer agency
+  site:linkedin.com/in "founder" influencer marketing agency 10-50 employees
+  site:linkedin.com/in "influencer marketing manager" food beverage brand
+  site:linkedin.com/in "brand partnerships lead" apparel lifestyle brand
+  site:linkedin.com/in "head of social" PR agency
+
+TARGET CONTACT TYPES:
+  1. AGENCY (use Prompt 1 in Notes):
+     - Head of Talent, VP of Partnerships, or Founders at influencer marketing agencies
+     - Company size: 5–50 employees
+     - NOT Fortune 500, NOT WPP/IPG/Publicis/Omnicom holding company subsidiaries
+
+  2. BRAND (use Prompt 2 in Notes):
+     - Influencer Marketing Manager, Brand Partnership Lead, or Head of Social
+     - Industries: food & beverage, apparel, lifestyle, fitness, gaming, or home goods
+     - NOT Fortune 500, NOT accessibility/hearing tech/medical brands
+
+  3. PR AGENCY (use Prompt 3 in Notes):
+     - Founders, Heads of Social, or Influencer Leads
+     - Company size: 10–100 employees
+     - NOT Fortune 500, NOT giant holding companies
+
+SKIP anyone who works at:
+  - Fortune 500 companies
+  - WPP, IPG, Publicis, Omnicom, Interpublic, Dentsu, or their direct subsidiaries
+  - Hearing technology brands (Oticon, Phonak, Starkey, Widex, Signia, ReSound, etc.)
+  - Accessibility-focused brands or medical/healthcare brands
+
+---
+
+STEP 2: CHECK FOR DUPLICATES
+
+Before adding any contact, search the Notion CRM to see if they already exist.
+Use the notion-search tool with the person's full name and/or LinkedIn URL.
+Skip anyone who already appears in the CRM.
+
+---
+
+STEP 3: ADD EXACTLY 10 NEW CONTACTS TO NOTION
+
+For each new contact, create a page in the Notion data source with these properties:
+  - Lead Name: Full name (title property)
+  - Company: Company name
+  - Role / Title: Job title
+  - LinkedIn Profile: Full LinkedIn URL (e.g. https://www.linkedin.com/in/username)
+  - Lead Type: "Agency" | "Brand" | "PR Agency"
+  - Outreach Status: "Not Contacted"
+  - Outreach Channel: "LinkedIn"
+  - Service Pitched: "Influencer Marketing"
+  - Notes: One of the following based on Lead Type:
+      Agency → "Use Prompt 1"
+      Brand → "Use Prompt 2"
+      PR Agency → "Use Prompt 3"
+
+Stop at exactly 10 new contacts. Do not add more.
+
+---
+
+STEP 4: CONFIRM
+
+After adding all 10 contacts, output a summary table with:
+  Name | Company | Title | Lead Type | LinkedIn URL
+
+Report how many were skipped as duplicates and how many were added.
