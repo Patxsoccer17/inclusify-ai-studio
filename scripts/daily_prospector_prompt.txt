@@ -15,7 +15,8 @@ Use WebSearch to find LinkedIn profiles. Search Google with queries like:
   site:linkedin.com/in "founder" influencer marketing agency 10-50 employees
   site:linkedin.com/in "influencer marketing manager" food beverage brand
   site:linkedin.com/in "brand partnerships lead" apparel lifestyle brand
-  site:linkedin.com/in "head of social" PR agency
+  site:linkedin.com/in "founder" PR agency influencer 10-25 employees
+  site:linkedin.com/in "head of influencer" OR "director of social" OR "influencer lead" PR agency
 
 TARGET CONTACT TYPES:
   1. AGENCY (use Prompt 1 in Notes):
@@ -29,8 +30,9 @@ TARGET CONTACT TYPES:
      - NOT Fortune 500, NOT accessibility/hearing tech/medical brands
 
   3. PR AGENCY (use Prompt 3 in Notes):
-     - Founders, Heads of Social, or Influencer Leads
-     - Company size: 10–100 employees
+     - Boutique agencies (10–25 employees): Founders or Co-Founders are the right contact
+     - Mid-size agencies (25–100 employees): Target Head of Influencer, Director of Social,
+       or Influencer Marketing Lead — NOT the founder (they've stepped back from the work)
      - NOT Fortune 500, NOT giant holding companies
 
 SKIP anyone who works at:
