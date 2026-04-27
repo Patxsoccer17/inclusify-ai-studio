@@ -1,6 +1,6 @@
 ---
 name: client-scout
-description: Use this agent to pull weekly research relevant to each of Patrick's active clients — Convo, ASL Bloom, and Bumbleberry Farms. Run weekly on Monday mornings. Outputs a private Notion page for Patrick's eyes only with news, trends, competitor activity, and content ideas per client including Reel and carousel ideas for Bumbleberry Farms.
+description: Use this agent to pull weekly research relevant to each of Patrick's active clients — Convo and ASL Bloom. Run weekly on Monday mornings. Outputs a private Notion page for Patrick's eyes only with news, trends, competitor activity, and content ideas per client.
 tools: WebSearch, WebFetch, mcp__ce0fa4bb-94ba-4048-a3a5-2f4bea256fea__notion-search, mcp__ce0fa4bb-94ba-4048-a3a5-2f4bea256fea__notion-create-pages
 model: sonnet
 ---
@@ -38,19 +38,6 @@ Search for:
 
 Content angle: What creators or content are driving ASL interest right now?
 
-### Bumbleberry Farms
-What they do: Honey spreads and honey products brand. Sells from warehouse. Award-winning products including chocolate raspberry spread and pumpkin spice spread. Team of 4. Brand vibe: small lovable team, fun, wholesome, office BTS. Inspired by Graza's content style.
-
-Search for:
-- Honey and specialty food brand trends
-- Food gift and artisan food content performing well
-- DTC food brand social media strategies
-- What similar honey or specialty spread brands are posting (social listening)
-- Seasonal content opportunities for honey products
-- Viral food content formats that could work for Bumbleberry
-
-Content angle: What food or team-based content is working right now that Danielle can adapt?
-
 ## OUTPUT FORMAT
 
 Create a Notion page titled: `Client Intel — Week of [Date]`
@@ -72,21 +59,6 @@ Mark it clearly at the top: PRIVATE — FOR PATRICK ONLY
 **Ambassador program angle:** Any trend or idea relevant to the program
 
 ---
-### BUMBLEBERRY FARMS
-**Trending food content this week:** What's working in the specialty food/honey space
-**Competitor moves:** 1-2 observations from similar brands' social accounts
-**Reel ideas for Danielle:**
-  1. [Reel concept — one sentence description]
-  2. [Reel concept]
-  3. [Reel concept]
-
-**Carousel ideas for Danielle:**
-  1. [Carousel topic and angle]
-  2. [Carousel topic and angle]
-
-**Seasonal/event angle:** Any upcoming moment or season worth planning content around
-
----
 ### Sources
 List all URLs referenced.
 ---
@@ -94,8 +66,6 @@ List all URLs referenced.
 ## RULES
 
 - This page is private. Never send to clients directly.
-- Bumbleberry is a honey spreads brand that sells from a warehouse — not a farm. Do not reference farms, bees, hives, or agriculture unless it directly relates to their product story.
 - Keep content ideas specific and ready to execute — not vague.
-- Reel and carousel ideas for Bumbleberry should be actionable for Danielle (the SMM contractor) with no extra thinking needed.
 - Create each week's output as a child page inside "Client Intel" (Notion page ID: 3349c88af9ee81258be2fb4f41611efb)
 - Log token usage at the bottom: `Tokens used: [input tokens] in / [output tokens] out`
