@@ -1,6 +1,6 @@
-# Inclusify Studio — Daily Morning Prospecting Cron Job
+# Inclusify Studio — Weekly Monday Morning Prospecting Cron Job
 # To install: run `crontab /home/user/inclusify-ai-studio/scripts/crontab.txt`
 # Or append to existing crontab: `crontab -l | cat - /home/user/inclusify-ai-studio/scripts/crontab.txt | crontab -`
 
-# Run the LinkedIn prospecting routine every day at 8:00 AM
-0 8 * * * /home/user/inclusify-ai-studio/scripts/morning-prospecting.sh >> /home/user/inclusify-ai-studio/logs/cron.log 2>&1
+# Run the LinkedIn prospecting routine every Monday at 8:00 AM
+0 8 * * 1 /home/user/inclusify-ai-studio/scripts/morning-prospecting.sh >> /home/user/inclusify-ai-studio/logs/cron.log 2>&1
