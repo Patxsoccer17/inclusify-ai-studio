@@ -1,0 +1,143 @@
+name: Morning Outreach Routine
+
+on:
+  schedule:
+    # 8:00am EST (UTC-5) Mon–Fri. Change to '0 12 * * 1-5' for 8am EDT (UTC-4).
+    - cron: '0 13 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Set to true to log contacts without writing to Notion (for testing)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  linkedin-crm-prospector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@latest
+
+      - name: Write Notion MCP config
+        # Writes a temporary .mcp.json using the NOTION_API_KEY secret.
+        # This file is never committed — it only exists for the duration of this job.
+        # Required secret: NOTION_API_KEY (your Notion integration token)
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+        run: |
+          python3 -c "
+          import json, os
+          key = os.environ['NOTION_API_KEY']
+          config = {
+            'mcpServers': {
+              'Notion': {
+                'command': 'npx',
+                'args': ['-y', '@notionhq/notion-mcp-server@latest'],
+                'env': {
+                  'OPENAPI_MCP_HEADERS': json.dumps({
+                    'Authorization': f'Bearer {key}',
+                    'Notion-Version': '2022-06-28'
+                  })
+                }
+              }
+            }
+          }
+          with open('.mcp.json', 'w') as f:
+            json.dump(config, f, indent=2)
+          print('MCP config written.')
+          "
+
+      - name: Run LinkedIn CRM Prospector
+        # Required secret: ANTHROPIC_API_KEY
+        # Required secret: NOTION_API_KEY (also used above for MCP config)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+        run: |
+          claude \
+            --print \
+            --max-turns 60 \
+            --allowedTools "WebSearch,WebFetch,mcp__Notion__notion-search,mcp__Notion__notion-create-pages,mcp__Notion__notion-fetch" \
+            "$(cat << 'PROMPT'
+          You are running as the LinkedIn CRM Prospector for Inclusify Studio — a Deaf-owned influencer marketing agency.
+
+          Your task: find exactly 10 new outreach contacts and add each one to the Notion Outreach CRM database.
+
+          --- CONTACT TYPES TO FIND ---
+
+          Type 1 — Agency (Prompt 1):
+          Heads of Talent, VP of Partnerships, or Founders at influencer marketing agencies with 5–50 employees.
+
+          Type 2 — Brand (Prompt 2):
+          Influencer Marketing Managers or Brand Partnership Leads at consumer brands in food & beverage, apparel, lifestyle, fitness, gaming, or home goods.
+
+          Type 3 — PR Agency (Prompt 3):
+          Founders, Heads of Social, or Influencer Leads at PR agencies with 10–100 employees.
+
+          Target roughly 3–4 contacts per type to fill the 10.
+
+          --- NEVER TARGET ---
+          Fortune 500 companies, giant holding companies (WPP, IPG, Publicis, Omnicom, Dentsu, Havas), hearing tech brands, accessibility tech brands, medical brands, ASL learning platforms, VRS providers, alcohol/gambling/political brands.
+
+          --- SEARCH STRATEGY ---
+          Use WebSearch with site:linkedin.com/in queries to find candidates. Run 6–8 searches across the three types. Build a candidate pool of 20–30 profiles, then filter and deduplicate before adding.
+
+          Example queries:
+          - site:linkedin.com/in "head of talent" "influencer marketing" agency
+          - site:linkedin.com/in "VP partnerships" "influencer marketing" agency -WPP -IPG
+          - site:linkedin.com/in founder "influencer marketing agency"
+          - site:linkedin.com/in "influencer marketing manager" ("food" OR "beverage" OR "CPG")
+          - site:linkedin.com/in "brand partnerships" influencer apparel fitness
+          - site:linkedin.com/in "influencer lead" OR "creator partnerships" lifestyle brand
+          - site:linkedin.com/in "head of social" "PR agency" influencer
+          - site:linkedin.com/in founder "PR agency" "influencer marketing"
+
+          --- DUPLICATE CHECK ---
+          Before adding each contact, search Notion (notion-search) for their full name and their LinkedIn URL. If either is already in the CRM, skip them.
+
+          --- NOTION CRM DATABASE ---
+          Database ID: 2e89c88a-f9ee-8083-bb18-e9e74edb5d34
+
+          Use notion-create-pages to add each contact. Properties to set:
+          - Lead Name: full name (title property)
+          - Company: company name
+          - Role / Title: job title
+          - LinkedIn Profile: LinkedIn URL
+          - Lead Type: "Agency" OR "Brand" OR "PR Agency"
+          - Outreach Status: "Not Contacted"
+          - Outreach Channel: "LinkedIn"
+          - Service Pitched: "Influencer Marketing"
+          - Notes: "Use Prompt 1" (Agency) OR "Use Prompt 2" (Brand) OR "Use Prompt 3" (PR Agency)
+
+          --- RULES ---
+          - Add contacts one by one — do not batch without checking duplicates first
+          - Stop exactly at 10 new additions
+          - If you cannot reach 10, log however many you found and note the shortfall
+
+          --- OUTPUT ---
+          After completing the run output a summary:
+          Run complete — [date]
+          New contacts added: [X]
+          Duplicates skipped: [X]
+          Filtered/excluded: [X]
+
+          List each contact added: Name — Title at Company — Lead Type
+          PROMPT
+          )"
+
+      - name: Clean up MCP config
+        if: always()
+        run: rm -f .mcp.json
