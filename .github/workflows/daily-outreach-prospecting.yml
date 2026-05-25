@@ -1,0 +1,63 @@
+name: Daily Outreach Prospecting
+
+on:
+  schedule:
+    # 8:00 AM Eastern Time (UTC-4 in summer, UTC-5 in winter)
+    # Run at 13:00 UTC to cover ET year-round (adjusts for DST)
+    - cron: '0 13 * * 1-5'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  prospect:
+    name: Find and Log 10 New Outreach Contacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run daily outreach prospecting
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          mcp_config: ${{ secrets.MCP_CONFIG }}
+          timeout_minutes: 25
+          prompt: |
+            Run the daily outreach prospecting routine for Inclusify Studio.
+
+            Search LinkedIn (via web search) for 10 NEW outreach contacts across these three categories:
+
+            CATEGORY 1 — Influencer Marketing Agencies (5–50 employees):
+            Target: Heads of talent, VP of partnerships, or founders.
+
+            CATEGORY 2 — Consumer Brands:
+            Target: Influencer marketing managers or brand partnership leads at brands in food & beverage, apparel, lifestyle, fitness, gaming, or home goods.
+
+            CATEGORY 3 — PR Agencies (10–100 employees):
+            Target: Founders, heads of social, or influencer leads.
+
+            EXCLUSIONS (skip these):
+            - Fortune 500 companies
+            - Giant holding companies: WPP, IPG, Publicis, Omnicom, Havas, Dentsu
+            - Hearing tech brands (Phonak, Oticon, Starkey, etc.)
+            - Accessibility-only brands
+            - Medical or pharma brands
+
+            PROCESS:
+            1. Search for candidates using web search (LinkedIn site searches)
+            2. Fetch the Outreach CRM from Notion: https://www.notion.so/2e89c88af9ee8083bb18e9e74edb5d34
+            3. Query existing CRM entries to check for duplicates — skip anyone already in the CRM
+            4. Stop at exactly 10 NEW contacts
+            5. Add each contact to the Notion CRM with:
+               - Lead Name: full name
+               - Company: company name
+               - Role / Title: job title
+               - LinkedIn Profile: LinkedIn URL
+               - Lead Type: Agency | Brand | PR Agency
+               - Outreach Status: Not Contacted
+               - Outreach Channel: LinkedIn
+               - Service Pitched: Influencer Marketing
+               - Notes: "Prompt 1" for agencies, "Prompt 2" for brands, "Prompt 3" for PR agencies (plus a brief description of who they are)
+
+            Aim for a mix across all three categories each run. Prioritize US-based contacts unless the contact is especially strong.
