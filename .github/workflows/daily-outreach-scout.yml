@@ -1,0 +1,67 @@
+name: Daily Outreach Scout — Inclusify Studio
+
+on:
+  schedule:
+    # 8:00 AM EST = 13:00 UTC (Mon–Fri)
+    - cron: '0 13 * * 1-5'
+  workflow_dispatch: # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  find-and-log-contacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Daily Outreach Routine
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "WebSearch,WebFetch,mcp__Notion__notion-fetch,mcp__Notion__notion-search,mcp__Notion__notion-query-database-view,mcp__Notion__notion-create-pages"
+          mcp_config: |
+            {
+              "mcpServers": {
+                "Notion": {
+                  "command": "npx",
+                  "args": ["-y", "@notionhq/notion-mcp-server@latest"],
+                  "env": {
+                    "NOTION_API_TOKEN": "${{ secrets.NOTION_API_TOKEN }}"
+                  }
+                }
+              }
+            }
+          prompt: |
+            You are running the daily outreach scout routine for Inclusify Studio (Patrick's Deaf/HoH influencer marketing agency).
+
+            ## TASK: Find and log 10 NEW outreach contacts
+
+            ### Step 1 — Search LinkedIn for contacts matching these profiles:
+            - **Agencies**: Heads of talent, VP of partnerships, or founders at influencer marketing agencies with 5–50 employees
+            - **Brands**: Influencer marketing managers or brand partnership leads at consumer brands in food & beverage, apparel, lifestyle, fitness, gaming, or home goods
+            - **PR Agencies**: Founders, heads of social, or influencer leads at PR agencies with 10–100 employees
+
+            **AVOID**: Fortune 500 companies, WPP/IPG/Publicis/Omnicom holding companies, hearing tech brands, accessibility brands, medical brands.
+
+            For each contact collect: full name, company name, job title, and LinkedIn URL.
+
+            ### Step 2 — Check the Notion Outreach CRM for duplicates
+            Fetch the CRM at: https://www.notion.so/2e89c88af9ee8083bb18e9e74edb5d34
+            Query the "All Leads" view and compare LinkedIn URLs and names. Skip anyone already in the CRM.
+
+            ### Step 3 — Add exactly 10 NEW contacts to the CRM
+            Use Notion data source ID: 2e89c88a-f9ee-813c-96fe-000b21385572
+
+            Log each contact with:
+            - Lead Name: full name
+            - Company: company name
+            - Role / Title: job title
+            - LinkedIn Profile: full LinkedIn URL
+            - Lead Type: "Agency" | "Brand" | "PR Agency"
+            - Outreach Status: "Not Contacted"
+            - Outreach Channel: "LinkedIn"
+            - Service Pitched: "Influencer Marketing"
+            - Notes: "Prompt 1" (Agency) | "Prompt 2" (Brand) | "Prompt 3" (PR Agency)
+
+            Stop at exactly 10 new contacts. Do not add duplicates.
