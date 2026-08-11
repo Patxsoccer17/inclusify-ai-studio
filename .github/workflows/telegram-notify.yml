@@ -3,18 +3,38 @@ name: Telegram Notification
 on:
   workflow_dispatch:
     inputs:
-      message:
-        description: 'Message to send to the group'
+      notification_type:
+        description: 'What kind of notification?'
         required: true
-        default: '👋 Hey team! There is new feedback to review. Please check in.'
+        type: choice
+        options:
+          - New video uploaded (Samir → team)
+          - New feedback left (team → Samir)
+          - Custom message
+      custom_message:
+        description: 'Custom message (only used if Custom message is selected above)'
+        required: false
+        default: ''
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Build message
+        id: build
+        run: |
+          TYPE="${{ github.event.inputs.notification_type }}"
+          if [ "$TYPE" = "New video uploaded (Samir → team)" ]; then
+            MSG="🎬 Hey @calvinyoungai and @patxwolf! @dezsamir just uploaded a new video to Review Room. Please check it out and leave your feedback!"
+          elif [ "$TYPE" = "New feedback left (team → Samir)" ]; then
+            MSG="💬 Hey @dezsamir! @calvinyoungai or @patxwolf left new feedback in Review Room. Please check it out!"
+          else
+            MSG="${{ github.event.inputs.custom_message }}"
+          fi
+          echo "message=$MSG" >> $GITHUB_OUTPUT
+
       - name: Send Telegram message
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d text="${{ github.event.inputs.message }}" \
-            -d parse_mode="HTML"
+            -d text="${{ steps.build.outputs.message }}"
